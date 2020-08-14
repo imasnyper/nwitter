@@ -1,0 +1,27 @@
+{
+  "name": "nwitter",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.1.3",
+    "autoprefixer": "^9.8.6",
+    "contentful-management": "^6.0.5",
+    "fs": "^0.0.1-security",
+    "graphql": "^15.3.0",
+    "moment": "^2.27.0",
+    "next": "9.5.2",
+    "pg": "^8.3.0",
+    "pg-hstore": "^2.3.3",
+    "postcss-flexbugs-fixes": "^4.2.1",
+    "postcss-preset-env": "^6.7.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "sequelize": "^6.3.4",
+    "tailwindcss": "^1.6.2"
+  }
+}
