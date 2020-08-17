@@ -6,21 +6,6 @@ import Navbar from '../components/navbar'
 import { initializeApollo } from '../lib/apollo'
 import { ALL_TWEETS } from '../gql/tweets'
 import { ALL_USERS } from '../gql/users'
-import { Sequelize, Model, DataTypes } from 'sequelize'
-
-async function connectDatabase() {
-  const sequelize = new Sequelize('nwitter', 'daniel', 'cyqgcnr4', {
-    host: 'localhost',
-    port: 5432,
-    dialect: 'postgres',
-  })
-
-  
-  sequelize.authenticate()
-    .then(console.log('connection has been successfully established'))
-    .catch(console.error)
-  
-}
 
 function Home() {
 
@@ -32,7 +17,6 @@ function Home() {
 
       <h1>Nwitter</h1>
       <Navbar />
-      <button onClick={connectDatabase}>Connect Database</button>
       <Tweets />
       
     </Layout>

@@ -34,7 +34,7 @@ class Query(graphene.ObjectType):
     all_users = graphene.List(UserType)
     all_profiles = graphene.List(ProfileType)
     profile_tweets = graphene.List(TweetType, profile=graphene.String(required=True))
-    all_followed_tweets = graphene.List(TweetType, profile=graphene.String(required=True))
+    all_followed_tweets = graphene.List(TweetType)
 
     def resolve_all_tweets(root, info):
         return Tweet.objects.all()
@@ -51,9 +51,12 @@ class Query(graphene.ObjectType):
         except Tweet.DoesNotExist:
             return None
 
-    def resolve_all_followed_tweets(root, info, profile):
+    def resolve_all_followed_tweets(root, info):
+        print(info.context.user)
+        if not info.context.user.is_authenticated:
+            return None
         try:
-            profile = Profile.objects.get(user__username=profile)
+            profile = Profile.objects.get(user__username=info.context.user.username)
             following = profile.following.all()
             return Tweet.objects.filter(Q(profile=profile) | Q(profile__in=following))
         except Tweet.DoesNotExist:

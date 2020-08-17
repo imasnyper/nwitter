@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
+    'rest_framework.authtoken',
     'profiles',
     'tweets',
+    'util',
 ]
 
 MIDDLEWARE = [
@@ -94,6 +96,16 @@ GRAPHENE = {
     "SCHEMA": "backend.schema.schema"
 }
 
+# REST Framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'util.authentication.ExpiringTokenAuthentication',
+    ]
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -131,3 +143,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+CLIENT_TOKEN_EXPIRY_TIME = 60
