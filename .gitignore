@@ -11,10 +11,6 @@ frontend/.pnp.js
 # testing
 frontend/coverage
 
-# next.js
-frontend/.next/
-frontend/out/
-
 # production
 frontend/build
 
@@ -32,6 +28,3 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
-
-# vercel
-backend/.vercel

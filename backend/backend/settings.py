@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'graphene_django',
     'rest_framework.authtoken',
+    'corsheaders',
     'profiles',
     'tweets',
     'util',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -144,5 +146,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Token Auth
 
 CLIENT_TOKEN_EXPIRY_TIME = 60
+
+# CORS
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+]

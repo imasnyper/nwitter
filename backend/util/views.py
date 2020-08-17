@@ -1,5 +1,5 @@
 import datetime
-from django.utils.timezone import utc
+from django.utils.timezone import utc, is_aware
 from django.utils import timezone
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
@@ -29,10 +29,13 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
             if not created and token.created < utc_now - datetime.timedelta(minutes=CLIENT_TOKEN_EXPIRY_TIME):
                 token.delete()
                 token = Token.objects.create(user=user)
-                token.created = datetime.datetime.utcnow()
+                token.created = utc_now
                 token.save()
 
-            response_data = {'token': token.key}
+            token_expiry_time = (token.created + datetime.timedelta(
+                minutes=CLIENT_TOKEN_EXPIRY_TIME)).timestamp()
+
+            response_data = {'token': token.key, 'username': user.username, 'tokenExpiryTime': token_expiry_time}
             return HttpResponse(json.dumps(response_data), content_type="application/json")
 
         return HttpResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

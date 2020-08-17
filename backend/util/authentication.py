@@ -14,7 +14,7 @@ class ExpiringTokenAuthentication(TokenAuthentication):
     def authenticate_credentials(self, key):
         try:
             token = self.get_model().objects.get(key=key)
-        except self.model.DoesNotExist:
+        except self.get_model().DoesNotExist:
             raise exceptions.AuthenticationFailed('Invalid token')
 
         if not token.user.is_active:
