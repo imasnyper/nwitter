@@ -3,21 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-
-const client = new ApolloClient({
-  uri: "http://localhost:8000/graphql-token/",
-  headers: {
-      authorization: `Token aa88288e75da938fb83cfdfe2b9b6372a65b31ec`
-  },
-  cache: new InMemoryCache(),
-})
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <ApolloProvider client={client}> */}
-    <App /> 
-    {/* </ApolloProvider> */}
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );
