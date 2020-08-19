@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'expiring_token',
     'profiles',
     'tweets',
-    'util',
 ]
 
 MIDDLEWARE = [
