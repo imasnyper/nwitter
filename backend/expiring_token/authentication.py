@@ -5,12 +5,15 @@ from rest_framework import exceptions
 from django.conf import settings
 from django.utils import timezone
 
+from .models import RefreshToken
+
 CLIENT_TOKEN_EXPIRY_TIME = settings.CLIENT_TOKEN_EXPIRY_TIME
 
 class ExpiringTokenAuthentication(TokenAuthentication):
     """
     from here: https://bit.ly/2PV6MaI
     """
+    model = RefreshToken
     def authenticate_credentials(self, key):
         try:
             token = self.get_model().objects.get(key=key)

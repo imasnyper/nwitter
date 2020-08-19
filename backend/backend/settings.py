@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'graphene_django',
     'rest_framework.authtoken',
     'corsheaders',
+    'expiring_token',
     'profiles',
     'tweets',
     'util',
@@ -104,7 +105,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # 'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'util.authentication.ExpiringTokenAuthentication',
+        'expiring_token.authentication.ExpiringTokenAuthentication',
     ]
 }
 
