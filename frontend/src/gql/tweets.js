@@ -31,3 +31,19 @@ query AllFollowedTweets {
   }
 }
 `
+
+export const COMPOSE_TWEET_MUTATION = gql`
+mutation CreateTweet($text: String!) {
+  createTweet(text: $text) {
+    tweet {
+      id 
+      text
+      profile {
+        user {
+          username
+        }
+      }
+    }
+  }
+}
+`

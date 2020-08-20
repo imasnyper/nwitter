@@ -31,7 +31,9 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
 
             utc_now = timezone.now()
 
-            if not created and token.created < utc_now - datetime.timedelta(minutes=CLIENT_TOKEN_EXPIRY_TIME):
+            five_minutes_until_expiry = token.created + datetime.timedelta(minutes=CLIENT_TOKEN_EXPIRY_TIME - 5)
+
+            if not created and (utc_now - five_minutes_until_expiry).seconds < (5 * 60):
                 token.delete()
                 token = RefreshToken.objects.create(user=user)
                 token.created = utc_now

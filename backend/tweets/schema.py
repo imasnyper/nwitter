@@ -1,9 +1,12 @@
 import graphene
+from graphql import GraphQLError
 from django.db.models import Q
 from graphene_django import DjangoObjectType
+from graphene_django.forms.mutation import DjangoModelFormMutation
 
 from profiles.models import Profile
 from tweets.models import Tweet
+from tweets.forms import TweetForm
 
 
 class TweetType(DjangoObjectType):
@@ -18,7 +21,23 @@ class TweetMutation(graphene.Mutation):
 
     tweet = graphene.Field(TweetType)
 
+    # @classmethod
+    # def get_form(cls, root, info, **input):
+    #     form_kwargs = cls.get_form_kwargs(root, info, **input)
+    #     profile = Profile.objects.get(user__username=info.context.user.username)
+    #     form_kwargs['profile'] = profile
+    #     return cls._meta.form_class(**form_kwargs)
+
+    # class Meta:
+    #     form_class = TweetForm
+    #     input_field_name = 'text'
+    #     return_field_name = 'tweet'
+
     def mutate(self, info, text):
+        if len(text) > 280:
+            raise GraphQLError("Your tweet cannot be longer than 280 characters.")
+        if len(text) < 1:
+            raise GraphQLError("Your tweet must contain text.")
         profile = Profile.objects.get(user__username=info.context.user.username)
         tweet = Tweet.objects.create(profile=profile, text=text)
 
