@@ -1,11 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { COMPOSE_TWEET_MUTATION } from '../gql/tweets'
-import { useMutation } from '@apollo/client'
+import Form from 'react-bootstrap/Form';
+import { COMPOSE_TWEET_MUTATION } from '../gql/tweets';
+import { useMutation } from '@apollo/client';
+import TweetInput from './tweetInput';
 
 export default function ComposeTweet(props) {
     const input = useRef(null);
     const [text, setText] = useState("");
-    const [createTweet, { data }] = useMutation(COMPOSE_TWEET_MUTATION);
+    const [createTweet] = useMutation(COMPOSE_TWEET_MUTATION);
 
     useEffect(() => {
         if(props.resendQuery) {
@@ -19,17 +21,15 @@ export default function ComposeTweet(props) {
 
     return (
         <div>
-            <form 
+            <Form 
                 onSubmit={e => {
                     e.preventDefault();
                     createTweet({variables: {text: input.current.value}});
                     props.setResendQuery(true)
-
                 }}
             >
-                <input ref={input} onChange={e => setText(e.target.value)} type="text"></input>
-                <button disabled={!validateForm()} type="submit">Tweet <span role="img" aria-label="bird">🐦</span></button>
-            </form>
+                <TweetInput input={input} setText={setText} validateForm={validateForm}/>
+            </Form>
         </div>
     )
 }

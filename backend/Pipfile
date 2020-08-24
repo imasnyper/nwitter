@@ -11,6 +11,7 @@ psycopg2 = "*"
 graphene-django = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
+django-filter = "*"
 
 [requires]
 python_version = "3.8"

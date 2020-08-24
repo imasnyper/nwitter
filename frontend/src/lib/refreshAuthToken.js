@@ -1,4 +1,3 @@
-
 export default async function refreshAuthToken(username, refreshToken) {
     const response = await fetch("http://localhost:8000/refresh-api-token/", {
         method: "POST",

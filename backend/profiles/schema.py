@@ -26,11 +26,16 @@ class ProfileType(DjangoObjectType):
 class Query(graphene.ObjectType):
     all_users = graphene.List(UserType)
     all_profiles = graphene.List(ProfileType)
+    profile = graphene.Field(ProfileType, profile=graphene.String(required=True))
 
     def resolve_all_users(root, info):
         return User.objects.all()
 
     def resolve_all_profiles(root, info):
         return Profile.objects.all()
+
+    def resolve_profile(root, info, profile):
+        profile = Profile.objects.get(user__username=profile)
+        return profile
 
 schema = graphene.Schema(query=Query)

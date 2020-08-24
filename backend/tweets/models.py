@@ -9,6 +9,14 @@ class Tweet(models.Model):
     updated = models.DateTimeField(auto_now=True)
     likes = models.IntegerField(default=1, blank=True, null=True)
 
+    def increment_likes(self):
+        self.likes = self.likes + 1
+        self.save()
+
+    def decrement_likes(self):
+        self.likes = self.likes - 1
+        self.save()
+
     def __str__(self):
         return f'{self.profile.user.username}: {self.text}'
 

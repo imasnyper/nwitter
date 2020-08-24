@@ -1,4 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Card from 'react-bootstrap/Card';
 
 export default function Login(props) {
     const [password, setPassword] = useState("")
@@ -46,14 +50,31 @@ export default function Login(props) {
     }
 
     return (
-        <div className="login">
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="username">Username:</label>
-                <input type="text" id="username" name="username" autoFocus onChange={handleInput}></input>
-                <label htmlFor="password">Password:</label>
-                <input type="password" id="password" name="password" onChange={e => setPassword(e.target.value)}></input>
-                <button disabled={!validateForm()} type="submit">Login</button>
-            </form>
-        </div>
+        <Container fluid>
+            <table style={{height: "100vh", width: "100%"}}>
+                <tbody>
+                    <tr >
+                        <td style={{width: "50%"}} class="align-middle">
+                            {/* <Card style={{width: "36rem", margin: "0 auto"}}className=""> */}
+                                <Form onSubmit={handleSubmit}>
+                                    <Form.Group>
+                                        <Form.Label>Username:</Form.Label>
+                                        <Form.Control type="text" id="username" name="username" autoFocus onChange={handleInput}></Form.Control>
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <Form.Label>Password:</Form.Label>
+                                        <Form.Control type="password" id="password" name="password" onChange={e => setPassword(e.target.value)}></Form.Control>
+                                    </Form.Group>
+                                    <Button disabled={!validateForm()} type="submit">Login</Button>
+                                </Form>
+                            {/* </Card> */}
+                        </td>
+                        <td style={{width: "50%"}} class="align-middle">
+                            Log in to Nwitter
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </Container>
     )
 }

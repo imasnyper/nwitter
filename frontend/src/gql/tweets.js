@@ -32,6 +32,22 @@ query AllFollowedTweets {
 }
 `
 
+export const PROFILE_TWEETS = gql`
+query ProfileTweets($profile: String!) {
+  profileTweets(profile: $profile) {
+    id
+    text
+    profile {
+      id
+      user {
+        id
+        username
+      }
+    }
+  }
+}
+`
+
 export const COMPOSE_TWEET_MUTATION = gql`
 mutation CreateTweet($text: String!) {
   createTweet(text: $text) {
@@ -39,7 +55,9 @@ mutation CreateTweet($text: String!) {
       id 
       text
       profile {
+        id
         user {
+          id
           username
         }
       }
