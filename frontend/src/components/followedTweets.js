@@ -16,7 +16,10 @@ export default function FollowedTweets(props) {
     if(loading) return <p>Loading... <span role="img" aria-label="hourglass">⌛</span></p>
     if(error) return <p>Error <span role="img" aria-label="crying">😭</span></p>
 
-    const tweets = data.allFollowedTweets
+    const tweets = data.allFollowedTweets.edges
 
-    return <Tweets tweets={tweets} />
+    return <Tweets 
+        tweets={tweets} 
+        setViewedProfileID={props.setViewedProfileID}
+    />
 }

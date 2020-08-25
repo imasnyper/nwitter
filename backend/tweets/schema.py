@@ -1,7 +1,10 @@
 import graphene
 from graphql import GraphQLError
+from graphql_relay import from_global_id
 from django.db.models import Q
+from django_filters import FilterSet, OrderingFilter
 from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.forms.mutation import DjangoModelFormMutation
 
 from profiles.models import Profile
@@ -9,10 +12,23 @@ from tweets.models import Tweet
 from tweets.forms import TweetForm
 
 
+class TweetFilter(FilterSet):
+    class Meta:
+        model = Tweet
+        fields = "__all__"
+
+    order_by = OrderingFilter(
+        fields = (
+            ('created', 'created'),
+        )
+    )
+
+
 class TweetType(DjangoObjectType):
     class Meta:
         model = Tweet
         fields = "__all__"
+        interfaces = (graphene.relay.Node, )
 
 
 class TweetMutation(graphene.Mutation):
@@ -20,18 +36,6 @@ class TweetMutation(graphene.Mutation):
         text = graphene.String(required=True)
 
     tweet = graphene.Field(TweetType)
-
-    # @classmethod
-    # def get_form(cls, root, info, **input):
-    #     form_kwargs = cls.get_form_kwargs(root, info, **input)
-    #     profile = Profile.objects.get(user__username=info.context.user.username)
-    #     form_kwargs['profile'] = profile
-    #     return cls._meta.form_class(**form_kwargs)
-
-    # class Meta:
-    #     form_class = TweetForm
-    #     input_field_name = 'text'
-    #     return_field_name = 'tweet'
 
     def mutate(self, info, text):
         if len(text) > 280:
@@ -44,20 +48,31 @@ class TweetMutation(graphene.Mutation):
         return TweetMutation(tweet=tweet)
 
 class Query(graphene.ObjectType):
-    all_tweets = graphene.List(TweetType)
-    profile_tweets = graphene.List(TweetType, profile=graphene.String(required=True))
-    all_followed_tweets = graphene.List(TweetType)
+    all_tweets = DjangoFilterConnectionField(
+        TweetType, 
+        filterset_class=TweetFilter, 
+        order_by=graphene.String(required=False))
+    profile_tweets = DjangoFilterConnectionField(
+        TweetType,
+        filterset_class=TweetFilter, 
+        # profile=graphene.String(required=True),
+        order_by=graphene.String(required=False))
+    all_followed_tweets = DjangoFilterConnectionField(
+        TweetType,
+        filterset_class=TweetFilter,
+        order_by=graphene.String(required=False))
 
-    def resolve_all_tweets(root, info):
+    def resolve_all_tweets(root, info, order_by):
         return Tweet.objects.all()
 
-    def resolve_profile_tweets(root, info, profile):
+    def resolve_profile_tweets(root, info, profile, order_by):
         try:
-            return Tweet.objects.filter(profile__user__username=profile)
+            return Tweet.objects.filter(profile__pk=from_global_id(profile)[1])
+            # return Tweet.objects.filter(profile__user__username=profile)
         except Tweet.DoesNotExist:
             return None
 
-    def resolve_all_followed_tweets(root, info):
+    def resolve_all_followed_tweets(root, info, order_by):
         print(info.context.user)
         if not info.context.user.is_authenticated:
             return None

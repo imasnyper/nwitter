@@ -2,14 +2,17 @@ import { gql } from '@apollo/client'
 
 export const ALL_TWEETS = gql`
 query AllTweets {
-  allTweets { 
-    id
-    text
-    profile {
-      id
-      user {
+  allTweets(orderBy: "-created") {
+    edges {
+      node {
         id
-        username
+        text
+        profile {
+          user {
+            username
+          }
+        }
+        created
       }
     }
   }
@@ -18,14 +21,19 @@ query AllTweets {
 
 export const ALL_FOLLOWED_TWEETS = gql`
 query AllFollowedTweets {
-  allFollowedTweets {
-    id
-    text
-    profile {
-      id
-      user {
+  allFollowedTweets(orderBy: "-created") {
+    edges {
+      node {
         id
-        username
+        text
+        profile {
+          id
+          user {
+            id
+            username
+          }
+        }
+        likes
       }
     }
   }
@@ -33,15 +41,19 @@ query AllFollowedTweets {
 `
 
 export const PROFILE_TWEETS = gql`
-query ProfileTweets($profile: String!) {
-  profileTweets(profile: $profile) {
-    id
-    text
-    profile {
-      id
-      user {
+query ProfileTweets($profile: ID!) {
+  profileTweets(profile: $profile, orderBy: "-created") {
+    edges {
+      node {
         id
-        username
+        text
+        profile {
+          id
+          user {
+            id
+            username
+          }
+        }
       }
     }
   }
