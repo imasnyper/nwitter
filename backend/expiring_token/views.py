@@ -1,7 +1,6 @@
 import datetime
 from django.utils.timezone import utc, is_aware
 from django.utils import timezone
-from graphql_relay import to_global_id
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework import status, parsers, renderers
@@ -15,7 +14,6 @@ from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render
 
 from .models import RefreshToken
-from profiles.models import Profile
 from .serializers import RefreshTokenSerializer
 
 CLIENT_TOKEN_EXPIRY_TIME = settings.CLIENT_TOKEN_EXPIRY_TIME
@@ -29,7 +27,6 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             user = User.objects.get(username=serializer.validated_data['username'])
-            profile = Profile.objects.get(user=user)
             token, created = RefreshToken.objects.get_or_create(user=user)
 
             utc_now = timezone.now()
@@ -45,13 +42,7 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
             token_expiry_time = (token.created + datetime.timedelta(
                 minutes=CLIENT_TOKEN_EXPIRY_TIME)).timestamp()
 
-            response_data = {
-                'token': token.key, 
-                'refresh_token': token.refresh_key, 
-                'username': user.username, 
-                'graphql_id': to_global_id("ProfileType", profile.id),
-                'tokenExpiryTime': token_expiry_time
-            }
+            response_data = {'token': token.key, 'refresh_token': token.refresh_key, 'username': user.username, 'tokenExpiryTime': token_expiry_time}
             return HttpResponse(json.dumps(response_data), content_type="application/json")
 
         return HttpResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -93,7 +84,6 @@ class RefreshExpiringAuthToken(APIView):
                                            context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = User.objects.get(username=serializer.validated_data['username'])
-        profile = Profile.objects.get(user=user)
         token = RefreshToken.objects.get(user=user, refresh_key=serializer.validated_data['refresh_token'])
         token.delete()
         token = RefreshToken.objects.create(user=user)
@@ -101,13 +91,7 @@ class RefreshExpiringAuthToken(APIView):
         token_expiry_time = (token.created + datetime.timedelta(
             minutes=CLIENT_TOKEN_EXPIRY_TIME)).timestamp()
 
-        response_data = {
-            'token': token.key, 
-            'refresh_token': token.refresh_key, 
-            'username': user.username, 
-            'graphql_id': to_global_id("ProfileType", profile.id),
-            'tokenExpiryTime': token_expiry_time
-        }
+        response_data = {'token': token.key, 'refresh_token': token.refresh_key, 'username': user.username, 'tokenExpiryTime': token_expiry_time}
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def test(request):

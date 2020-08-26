@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import usePersistentState from '../lib/persistentState';
+import React from 'react';
 import { useParams, useRouteMatch, Switch, Link, Route } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { PROFILE_TWEETS } from '../gql/tweets'
@@ -24,31 +23,15 @@ export default function Profile(props) {
     const { username: viewedUsername } = useParams();
     let { path, url } = useRouteMatch();
     url = removeTrailingSlash(url)
-    const [id, setID] = useState("")
-
-    useEffect(() => {
-        async function getViewedProfileID(username) {
-            const viewedProfileID = await fetch(
-                `http://localhost:8000/get-profile-uuid/${username}/`, {
-                    headers: {
-                        "Authorization": `Token ${props.authToken}`
-                    }
-                }
-                ).then(response => { response.text().then(text => { setID(text) }) })
-        }
-
-        getViewedProfileID(viewedUsername)
-    }, [])
-
-    const { data: profileData, loading: profileLoading, error: profileError } = useQuery(PROFILE, {variables: {id: id}}) 
-    const { data: tweetData, loading: tweetLoading, error: tweetError, refresh } = useQuery(PROFILE_TWEETS, {variables: {profile: id}})
+    const { data: profileData, loading: profileLoading, error: profileError } = useQuery(PROFILE, {variables: {profile: viewedUsername}})
+    const { data: tweetData, loading: tweetLoading, error: tweetError, refresh } = useQuery(PROFILE_TWEETS, {variables: {profile: viewedUsername}}) 
 
     if(profileLoading || tweetLoading) return <p>Loading... <span role="img" aria-label="hourglass">⌛</span></p>
     if(profileError || tweetError) return <p>Error <span role="img" aria-label="crying">😭</span></p>
 
-    const tweets = tweetData.profileTweets.edges
+    const tweets = tweetData.profileTweets
     const profile = profileData.profile
-    
+
     const createdTime = moment(profile.created)
 
     const headerInfo = {
@@ -72,12 +55,12 @@ export default function Profile(props) {
                         <Col xs={12}>
                             <Card>
                                 <Card.Title>
-                                    <h1>Profile {profile.user.username}</h1>
+                                    Profile {profile.user.username}
                                 </Card.Title>
                                 <Card.Body>
                                     <p>Has been a member for {createdTime.from(moment(), true)}</p>
-                                    <p><Link to={`${url}/followed`}>Following: {profile.following.edges.length}</Link></p>
-                                    <p><Link to={`${url}/followed`}>Followers: {profile.followers.edges.length}</Link></p>
+                                    <p><Link to={`${url}/followed`}>Following: {profile.following.length}</Link></p>
+                                    <p><Link to={`${url}/followed`}>Followers: {profile.followers.length}</Link></p>
                                 </Card.Body>
                             </Card>
                         </Col>

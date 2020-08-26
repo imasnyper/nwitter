@@ -1,31 +1,28 @@
 import { gql } from '@apollo/client'
 
 export const PROFILE = gql`
-query GetProfile($id: ID!) {
-  profile(id: $id) {
-    id
-    user {
-      username
-    }
-    followers {
-      edges {
-        node {
-          user {
-            username
-          }
+query GetProfile($profile: String!) {
+    profile(profile: $profile) {
+      id
+      user {
+        id
+        username
+      }
+      following {
+        id
+        user {
+          id
+          username
         }
       }
-    }
-    following {
-      edges {
-        node {
-          user {
-            username
-          }
+      followers {
+        id
+        user {
+          id
+          username
         }
       }
+      created
     }
-    created
   }
-}
 `

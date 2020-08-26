@@ -34,7 +34,6 @@ export default function Login(props) {
                 setRefreshTokenObject({
                     authToken: data.token,
                     username: data.username,
-                    graphqlID: data.graphql_id,
                     tokenExpiryTime: data.tokenExpiryTime,
                     refreshToken: data.refresh_token
                 })

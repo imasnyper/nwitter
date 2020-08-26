@@ -12,16 +12,14 @@ import moment from 'moment';
 import refreshAuthToken from './lib/refreshAuthToken';
 
 function App() {
-  const [{username, graphqlID, authToken, refreshToken, tokenExpiryTime}, setRefreshTokenObject] = usePersistentState("refreshTokenObject", {
+  const [{username, authToken, refreshToken, tokenExpiryTime}, setRefreshTokenObject] = usePersistentState("refreshTokenObject", {
     username: "",
-    graphqlID: "",
     authToken: "",
     refreshToken: "",
     tokenExpiryTime: 999
   })
 
   const [resendQuery, setResendQuery] = useState(false)
-  const [viewedProfileID, setViewedProfileID] = usePersistentState("viewedProfileID", "")
 
   const expiryTimeObject = moment.unix(tokenExpiryTime).utc()
   // TODO: figure out why difference evalutates to 0 sometimes.
@@ -37,7 +35,6 @@ function App() {
       const {token, refresh_token, tokenExpiryTime} = await data;
       setRefreshTokenObject({
         username: username,
-        graphqlID: graphqlID,
         authToken: token,
         refreshToken: refresh_token,
         tokenExpiryTime: tokenExpiryTime,
@@ -47,7 +44,7 @@ function App() {
     if(refreshToken !== "" && difference.minutes() < 5 && difference.minutes() !== 0) {
       handleRefresh();
     }
-  }, [difference, refreshToken, setRefreshTokenObject, tokenExpiryTime, username, graphqlID])
+  }, [difference, refreshToken, setRefreshTokenObject, tokenExpiryTime, username])
 
   if(authToken === "") {
     return <Login 
@@ -68,7 +65,6 @@ function App() {
     setRefreshTokenObject({
       authToken: "",
       username: "",
-      graphqlID: "",
       tokenExpiryTime: 999,
       refreshToken: "",
     })
@@ -93,8 +89,6 @@ function App() {
           <Route exact path="/">
             <Home 
               username={username} 
-              graphqlID={graphqlID}
-              setViewedProfileID={setViewedProfileID}
               authToken={authToken} 
               handleLogout={handleLogout} 
               handleTime={handleTime}
@@ -105,9 +99,6 @@ function App() {
           <Route path="/profiles/:username">
             <Profile 
               username={username}
-              graphqlID={graphqlID}
-              viewedProfileID={viewedProfileID}
-              authToken={authToken}
               handleLogout={handleLogout}
               handleTime={handleTime}
               resendQuery={resendQuery}

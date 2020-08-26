@@ -14,8 +14,7 @@ export default function Home(props) {
     const headerInfo = {
         resendQuery: props.resendQuery, 
         setResendQuery: props.setResendQuery, 
-        username: props.username,
-        graphqlID: props.graphqlID,
+        username: props.username, 
         handleLogout: props.handleLogout,
         handleTime: props.handleTime
     }
@@ -29,11 +28,7 @@ export default function Home(props) {
             </Row>
             <Row>
                 <Col xs={12}>
-                    <FollowedTweets 
-                        resendQuery={props.resendQuery} 
-                        setResendQuery={props.setResendQuery}
-                        setViewedProfileID={props.setViewedProfileID}
-                    />
+                    <FollowedTweets resendQuery={props.resendQuery} setResendQuery={props.setResendQuery}/>
                 </Col>
             </Row>
         </Container>

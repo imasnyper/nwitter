@@ -8,14 +8,7 @@ export default function Tweets(props) {
     return (
         <>
             {tweets.map(tweet => {
-                return (
-                    <div style={{paddingBottom: "1rem"}} key={tweet.node.id}>
-                        <Tweet 
-                            tweet={tweet.node} 
-                            setViewedProfileID={props.setViewedProfileID}
-                        />
-                    </div>
-                )
+                return <div style={{paddingBottom: "1rem"}} key={tweet.id}><Tweet tweet={tweet} /></div>
             })}
         </>
     )
