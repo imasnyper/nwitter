@@ -12,6 +12,7 @@ query AllTweets {
         username
       }
     }
+    likes
   }
 }
 `
@@ -28,6 +29,7 @@ query AllFollowedTweets {
         username
       }
     }
+    likes
   }
 }
 `
@@ -44,6 +46,7 @@ query ProfileTweets($profile: String!) {
         username
       }
     }
+    likes
   }
 }
 `
@@ -61,6 +64,25 @@ mutation CreateTweet($text: String!) {
           username
         }
       }
+      likes
+    }
+  }
+}
+`
+
+export const LIKE_TWEET_MUTATION = gql`
+mutation LikeTweet($id: Int!) {
+  likeTweet(id: $id) {
+    tweet {
+      id
+      likes
+      text
+      profile {
+        user {
+          username
+        }
+      }
+      likes
     }
   }
 }

@@ -1,6 +1,7 @@
 import graphene
 from graphql import GraphQLError
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from graphene_django import DjangoObjectType
 from graphene_django.forms.mutation import DjangoModelFormMutation
 
@@ -13,6 +14,19 @@ class TweetType(DjangoObjectType):
     class Meta:
         model = Tweet
         fields = "__all__"
+
+
+class TweetLikeMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.Int(required=True)
+    
+    tweet = graphene.Field(TweetType)
+
+    def mutate(self, info, id):
+        tweet = get_object_or_404(Tweet, pk=id)
+        tweet.increment_likes()
+
+        return TweetLikeMutation(tweet=tweet)
 
 
 class TweetMutation(graphene.Mutation):
@@ -49,11 +63,11 @@ class Query(graphene.ObjectType):
     all_followed_tweets = graphene.List(TweetType)
 
     def resolve_all_tweets(root, info):
-        return Tweet.objects.all()
+        return Tweet.objects.all().order_by("-created")
 
     def resolve_profile_tweets(root, info, profile):
         try:
-            return Tweet.objects.filter(profile__user__username=profile)
+            return Tweet.objects.filter(profile__user__username=profile).order_by("-created")
         except Tweet.DoesNotExist:
             return None
 
@@ -64,13 +78,14 @@ class Query(graphene.ObjectType):
         try:
             profile = Profile.objects.get(user__username=info.context.user.username)
             following = profile.following.all()
-            return Tweet.objects.filter(Q(profile=profile) | Q(profile__in=following))
+            return Tweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by("-created")
         except Tweet.DoesNotExist:
             return None
 
 
 class Mutation(graphene.ObjectType):
     create_tweet = TweetMutation.Field()
+    like_tweet = TweetLikeMutation.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
