@@ -93,22 +93,3 @@ class RefreshExpiringAuthToken(APIView):
 
         response_data = {'token': token.key, 'refresh_token': token.refresh_key, 'username': user.username, 'tokenExpiryTime': token_expiry_time}
         return HttpResponse(json.dumps(response_data), content_type="application/json")
-
-def test(request):
-    return render(request, "test.html")
-
-def login(request):
-    username = request.POST.get('username', "")
-    password = request.POST.get('password', "")
-    user = authenticate(request, username=username, password=password)
-
-    if user is not None:
-        login(request, user)
-
-    return HttpResponse(status=status.HTTP_200_OK)
-
-
-def logout(request):
-    logout(request)
-
-    return HttpResponse(status=status.HTTP_200_OK)

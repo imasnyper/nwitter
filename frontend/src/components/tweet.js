@@ -1,25 +1,43 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useMutation } from '@apollo/client';
 import Card from 'react-bootstrap/Card';
+import Badge from 'react-bootstrap/Badge';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button'
 import { LIKE_TWEET_MUTATION } from '../gql/tweets';
+import ErrorToast from './errorToast';
+import { ArrowRepeat } from 'react-bootstrap-icons';
 
 export default function Tweet(props) {
     const { tweet } = props
-    const [ likeTweet ] = useMutation(LIKE_TWEET_MUTATION)
+    const [show, setShow] = useState(false);
 
-    console.log(tweet.likes)
+    const [ likeTweet, {error} ] = useMutation(LIKE_TWEET_MUTATION, {onError: () => {setShow(true)}})
+    
 
     return (
-        <Card className="tweet-card">
-            <Card.Body>
-                <Card.Title><Link to={`/profiles/${tweet.profile.user.username}`}>{tweet.profile.user.username}</Link></Card.Title>
-                <Card.Text>
-                    {tweet.text}
-                </Card.Text>
-                <span><Button onClick={() => likeTweet({variables: {id: tweet.id}})}>❤</Button></span><span>&nbsp;{tweet.likes}</span>
-            </Card.Body>
-        </Card>
+        <>
+            <ErrorToast show={show} setShow={setShow} error={error}/>
+            <Card className="tweet-card">
+                <Card.Body>
+                    <Card.Title>
+                        <Link to={`/profiles/${tweet.profile.user.username}`}>{tweet.profile.user.username}</Link>
+                    </Card.Title>
+                    <Card.Text>
+                        {tweet.text}
+                    </Card.Text>
+                    <span style={{paddingRight: ".5rem"}}>
+                        <Button onClick={() => likeTweet({variables: {id: tweet.id}})}>
+                            ❤ <Badge variant="light">{tweet.likes.length}</Badge>
+                        </Button>
+                    </span>
+                    <span>
+                        <Button>
+                            <ArrowRepeat size={22}/> <Badge variant="light">{tweet.retweets.length}</Badge>
+                        </Button>
+                    </span>
+                </Card.Body>
+            </Card>
+        </>
     )
 }

@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
+import { Link } from 'react-router-dom'
 
 export default function Login(props) {
     const [password, setPassword] = useState("")
@@ -66,10 +67,11 @@ export default function Login(props) {
                                         <Form.Control type="password" id="password" name="password" onChange={e => setPassword(e.target.value)}></Form.Control>
                                     </Form.Group>
                                     <Button disabled={!validateForm()} type="submit">Login</Button>
+                                    <Link to='/signup'>New User? Sign Up!</Link>
                                 </Form>
                             {/* </Card> */}
                         </td>
-                        <td style={{width: "50%"}} class="align-middle">
+                        <td style={{width: "50%"}} className="align-middle">
                             Log in to Nwitter
                         </td>
                     </tr>

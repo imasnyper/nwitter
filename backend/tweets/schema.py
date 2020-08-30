@@ -1,3 +1,5 @@
+from itertools import chain
+
 import graphene
 from graphql import GraphQLError
 from django.db.models import Q
@@ -6,14 +8,42 @@ from graphene_django import DjangoObjectType
 from graphene_django.forms.mutation import DjangoModelFormMutation
 
 from profiles.models import Profile
-from tweets.models import Tweet
+from tweets.models import Tweet, Like, Retweet
 from tweets.forms import TweetForm
 
 
+class LikeType(DjangoObjectType):
+    class Meta:
+        model = Like
+        fields = "__all__"
+
+
+class RetweetType(DjangoObjectType):
+    likes = graphene.List(LikeType)
+
+    class Meta:
+        model = Retweet
+        fields = "__all__"
+
+    def resolve_likes(self, info):
+        likes = Like.objects.filter(tweet=self)
+        return likes
+
 class TweetType(DjangoObjectType):
+    likes = graphene.List(LikeType)
+    retweets = graphene.List(RetweetType)
+
     class Meta:
         model = Tweet
         fields = "__all__"
+
+    def resolve_likes(self, info):
+        likes = Like.objects.filter(tweet=self)
+        return likes
+
+    def resolve_retweets(self, info):
+        retweets = Retweet.objects.filter(tweet=self)
+        return retweets
 
 
 class TweetLikeMutation(graphene.Mutation):
@@ -24,9 +54,26 @@ class TweetLikeMutation(graphene.Mutation):
 
     def mutate(self, info, id):
         tweet = get_object_or_404(Tweet, pk=id)
-        tweet.increment_likes()
+        profile = Profile.objects.get(user__username=info.context.user.username)
+        like = Like.objects.create(profile=profile, tweet=tweet)
 
         return TweetLikeMutation(tweet=tweet)
+
+
+class TweetRetweetMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.Int(required=True)
+        text = graphene.String(required=False)
+
+    tweet = graphene.Field(TweetType)
+
+    def mutate(self, info, id, text=""):
+        tweet = get_object_or_404(Tweet, id=id)
+        profile = Profile.objects.get(user__username=info.context.user.username)
+        retweet = Retweet.objects.create(profile=profile, text=text, tweet=tweet)
+
+        return TweetRetweetMutation(tweet=tweet)
+
 
 
 class TweetMutation(graphene.Mutation):
@@ -34,18 +81,6 @@ class TweetMutation(graphene.Mutation):
         text = graphene.String(required=True)
 
     tweet = graphene.Field(TweetType)
-
-    # @classmethod
-    # def get_form(cls, root, info, **input):
-    #     form_kwargs = cls.get_form_kwargs(root, info, **input)
-    #     profile = Profile.objects.get(user__username=info.context.user.username)
-    #     form_kwargs['profile'] = profile
-    #     return cls._meta.form_class(**form_kwargs)
-
-    # class Meta:
-    #     form_class = TweetForm
-    #     input_field_name = 'text'
-    #     return_field_name = 'tweet'
 
     def mutate(self, info, text):
         if len(text) > 280:
@@ -61,6 +96,9 @@ class Query(graphene.ObjectType):
     all_tweets = graphene.List(TweetType)
     profile_tweets = graphene.List(TweetType, profile=graphene.String(required=True))
     all_followed_tweets = graphene.List(TweetType)
+    get_tweet = graphene.Field(TweetType, id=graphene.Int(required=True))
+    all_followed_tweets_and_retweets = graphene.List(TweetType)
+    all_followed_retweets = graphene.List(RetweetType)
 
     def resolve_all_tweets(root, info):
         return Tweet.objects.all().order_by("-created")
@@ -72,7 +110,6 @@ class Query(graphene.ObjectType):
             return None
 
     def resolve_all_followed_tweets(root, info):
-        print(info.context.user)
         if not info.context.user.is_authenticated:
             return None
         try:
@@ -81,6 +118,38 @@ class Query(graphene.ObjectType):
             return Tweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by("-created")
         except Tweet.DoesNotExist:
             return None
+
+    def resolve_all_followed_retweets(root, info):
+        if not info.context.user.is_authenticated:
+            return None
+        try:
+            profile = Profile.objects.get(user__username=info.context.user.username)
+            following = profile.following.all()
+            return Retweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by("-created")
+        except Retweet.DoesNotExist:
+            return None
+
+    def resolve_all_followed_tweets_and_retweets(root, info):
+        if not info.context.user.is_authenticated:
+            return None
+        try:
+            profile = Profile.objects.get(user__username=info.context.user.username)
+            following = profile.following.all()
+            tweets = []
+            # tweets = Tweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by('-created')
+            retweets = Retweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by('-created')
+            result_list = sorted(
+                chain(tweets, retweets),
+                key=lambda instance: instance.created
+            )
+            return result_list
+        finally:
+            pass
+
+    def resolve_get_tweet(root, info, id):
+        tweet = Tweet.objects.get(id=id)
+
+        return tweet
 
 
 class Mutation(graphene.ObjectType):

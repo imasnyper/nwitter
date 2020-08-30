@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Redirect } from 'react-router-dom'
 import './App.css';
 
 import usePersistentState from './lib/persistentState';
 import Login from './components/login';
 import Home from './components/home';
 import Profile from './components/profile';
+import Signup from './components/signup';
 import FourZeroFour from './components/fourZeroFour';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import moment from 'moment';
@@ -46,15 +48,15 @@ function App() {
     }
   }, [difference, refreshToken, setRefreshTokenObject, tokenExpiryTime, username])
 
-  if(authToken === "") {
-    return <Login 
-      setRefreshTokenObject={setRefreshTokenObject}
-      username={username}
-    />
-  }
+  // if(authToken === "") {
+  //   return <Login 
+  //     setRefreshTokenObject={setRefreshTokenObject}
+  //     username={username}
+  //   />
+  // }
 
   const client = new ApolloClient({
-    uri: "http://localhost:8000/graphql-token/",
+    uri: "http://localhost:8000/graphql/",
     headers: {
         authorization: `Token ${authToken}`
     },
@@ -87,14 +89,17 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/">
-            <Home 
-              username={username} 
-              authToken={authToken} 
-              handleLogout={handleLogout} 
-              handleTime={handleTime}
-              resendQuery={resendQuery}
-              setResendQuery={setResendQuery}
-            />
+            {authToken === ""           ? 
+              <Redirect to="/login" />  : 
+              <Home 
+                username={username} 
+                authToken={authToken} 
+                handleLogout={handleLogout} 
+                handleTime={handleTime}
+                resendQuery={resendQuery}
+                setResendQuery={setResendQuery}
+              />
+            }
           </Route>
           <Route path="/profiles/:username">
             <Profile 
@@ -104,6 +109,15 @@ function App() {
               resendQuery={resendQuery}
               setResendQuery={setResendQuery}
             />
+          </Route>
+          <Route path="/login">
+            <Login 
+              setRefreshTokenObject={setRefreshTokenObject}
+              username={username}
+            />
+          </Route>
+          <Route path="/signup">
+            <Signup authToken={authToken} setRefreshTokenObject={setRefreshTokenObject}/>
           </Route>
           <Route path="*">
             <FourZeroFour />

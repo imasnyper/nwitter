@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
@@ -23,7 +24,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import authentication_classes, permission_classes, api_view
 
 from expiring_token.authentication import ExpiringTokenAuthentication
-from expiring_token.views import ObtainExpiringAuthToken, RefreshExpiringAuthToken, login, logout, test
+from expiring_token.views import ObtainExpiringAuthToken, RefreshExpiringAuthToken
+
+from profiles import views as profile_views
 
 
 class DRFAuthenticatedGraphQLView(GraphQLView):
@@ -46,11 +49,9 @@ class DRFAuthenticatedGraphQLView(GraphQLView):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
-    path('graphql-token/', csrf_exempt(DRFAuthenticatedGraphQLView.as_view())),
+    path('graphql/', csrf_exempt(DRFAuthenticatedGraphQLView.as_view())),
     path('api-token-auth/', ObtainExpiringAuthToken.as_view()),
     path('refresh-api-token/', RefreshExpiringAuthToken.as_view()),
-    path('login/', login),
-    path('logout/', logout),
-    path('test/', test),
+    path('signup/', csrf_exempt(profile_views.signup)),
+    # path('', include('django.contrib.auth.urls'))
 ]
