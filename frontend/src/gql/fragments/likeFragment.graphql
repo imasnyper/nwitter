@@ -1,0 +1,15 @@
+#import "./ProfileFragment.graphql"
+
+fragment LikeFragment on LikeType {
+  id
+  profile {
+    ...ProfileFragment
+  }
+  tweet {
+    id
+    text
+    profile {
+      ...ProfileFragment
+    }
+  }
+}

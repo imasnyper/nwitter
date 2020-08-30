@@ -1,0 +1,22 @@
+#import "./ProfileFragment.graphql"
+#import "./LikeFragment.graphql"
+
+fragment RetweetFragment on RetweetType {
+  id
+  text
+  profile {
+    ...ProfileFragment
+  }
+  tweet {
+    id
+    text
+    profile {
+      ...ProfileFragment
+    }
+  }
+  created
+  updated
+  likes {
+    ...LikeFragment
+  }
+}
