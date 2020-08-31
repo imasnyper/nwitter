@@ -1,0 +1,5 @@
+add retweets to the list of followedTweets - added but need to modify
+    sort tweets and retweets as a whole to display retweets inline at the proper time in history
+add follow profile mutation
+add follow profile link on each tweet
+style EVERYTHING
