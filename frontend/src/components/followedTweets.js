@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { useQuery } from '@apollo/client'
 import { ALL_FOLLOWED_TWEETS_AND_RETWEETS } from '../gql/tweets'
-import Tweets from '../components/tweets'
+import Tweets from './tweets'
+import TweetsAndRetweets from './tweetsAndRetweets';
 
 export default function FollowedTweets(props) {
     const { data, loading, error, refetch } = useQuery(ALL_FOLLOWED_TWEETS_AND_RETWEETS)
@@ -18,7 +19,6 @@ export default function FollowedTweets(props) {
 
     const tweets = data.allFollowedTweets
     const retweets = data.allFollowedRetweets
-    console.log(retweets)
 
-    return <Tweets tweets={tweets} />
+    return <TweetsAndRetweets tweets={tweets} retweets={retweets} />
 }
