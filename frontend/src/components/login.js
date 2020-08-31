@@ -3,11 +3,12 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 export default function Login(props) {
     const [password, setPassword] = useState("")
     const { setRefreshTokenObject, username } = props
+    const history = useHistory();
 
     function validateForm() {
         return username.length > 0 && password.length > 0
@@ -20,7 +21,6 @@ export default function Login(props) {
             headers: {
                 "Content-Type": "application/json"
             },
-            // credentials: "same-origin",
             body: JSON.stringify({
                 "username": username,
                 "password": password
@@ -28,16 +28,13 @@ export default function Login(props) {
         })
             .then(response => response.json())
             .then(data => {
-                // setAuthToken(data.token);
-                // setUsername(data.username);
-                // setTokenExpiryTime(data.tokenExpiryTime);
-                // setRefreshToken(data.refresh_token)
                 setRefreshTokenObject({
                     authToken: data.token,
                     username: data.username,
                     tokenExpiryTime: data.tokenExpiryTime,
                     refreshToken: data.refresh_token
                 })
+                history.push("/");
             })
     }
 

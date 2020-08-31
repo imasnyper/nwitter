@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 
 export default function Signup(props) {
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password1, setPassword1] = useState('');
     const [password2, setPassword2] = useState('');
     const { authToken, setRefreshTokenObject } = props
@@ -23,6 +24,7 @@ export default function Signup(props) {
             },
             body: JSON.stringify({
                 "username": username,
+                "email": email,
                 "password1": password1,
                 "password2": password2,
             })
@@ -68,6 +70,10 @@ export default function Signup(props) {
                                     <Form.Group>
                                         <Form.Label>Username:</Form.Label>
                                         <Form.Control type="text" id="username" name="username" autoFocus onChange={e => setUsername(e.target.value)}></Form.Control>
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <Form.Label>Email:</Form.Label>
+                                        <Form.Control type="text" id="email" name="email" onChange={e => setEmail(e.target.value)}></Form.Control>
                                     </Form.Group>
                                     <Form.Group>
                                         <Form.Label>Password:</Form.Label>
