@@ -54,10 +54,10 @@ export default function Profile(props) {
                     <Row style={{paddingBottom: "1rem"}}>
                         <Col xs={12}>
                             <Card>
-                                <Card.Title>
-                                    Profile {profile.user.username}
-                                </Card.Title>
                                 <Card.Body>
+                                    <Card.Title>
+                                        Profile {profile.user.username}
+                                    </Card.Title>
                                     <p>Has been a member for {createdTime.from(moment(), true)}</p>
                                     <p><Link to={`${url}/followed`}>Following: {profile.following.length}</Link></p>
                                     <p><Link to={`${url}/followed`}>Followers: {profile.followers.length}</Link></p>
@@ -67,7 +67,7 @@ export default function Profile(props) {
                     </Row>
                     <Row>
                     <Col xs={12}>
-                        <Tweets tweets={tweets} />
+                        <Tweets setResendQuery={props.setResendQuery} tweets={tweets} />
                     </Col>
                 </Row>
                 </Route>

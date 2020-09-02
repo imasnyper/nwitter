@@ -20,5 +20,5 @@ export default function FollowedTweets(props) {
     const tweets = data.allFollowedTweets
     const retweets = data.allFollowedRetweets
 
-    return <TweetsAndRetweets tweets={tweets} retweets={retweets} />
+    return <TweetsAndRetweets tweets={tweets} retweets={retweets} setResendQuery={props.setResendQuery} />
 }

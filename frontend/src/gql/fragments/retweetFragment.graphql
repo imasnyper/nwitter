@@ -13,6 +13,12 @@ fragment RetweetFragment on RetweetType {
     profile {
       ...ProfileFragment
     }
+    likes {
+      ...LikeFragment
+    }
+    retweets {
+      id
+    }
   }
   created
   updated

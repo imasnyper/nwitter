@@ -8,7 +8,7 @@ export default function Tweets(props) {
     return (
         <>
             {tweets.map(tweet => {
-                return <div style={{paddingBottom: "1rem"}} key={tweet.id}><Tweet tweet={tweet} /></div>
+                return <div style={{paddingBottom: "1rem"}} key={tweet.id}><Tweet setResendQuery={props.setResendQuery} tweet={tweet} /></div>
             })}
         </>
     )

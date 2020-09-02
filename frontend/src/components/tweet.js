@@ -14,6 +14,10 @@ export default function Tweet(props) {
 
     const [ likeTweet, {error} ] = useMutation(LIKE_TWEET_MUTATION, {onError: () => {setShow(true)}})
     
+    const handleLike = () => {
+        likeTweet({variables: {id: tweet.id}})
+        props.setResendQuery(true);
+    }
 
     return (
         <>
@@ -27,7 +31,7 @@ export default function Tweet(props) {
                         {tweet.text}
                     </Card.Text>
                     <span style={{paddingRight: ".5rem"}}>
-                        <Button onClick={() => likeTweet({variables: {id: tweet.id}})}>
+                        <Button onClick={handleLike}>
                             ❤ <Badge variant="light">{tweet.likes.length}</Badge>
                         </Button>
                     </span>
