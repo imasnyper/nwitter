@@ -17,7 +17,7 @@ class Tweet(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        Like.objects.create(profile=self.profile, tweet=self)
+        Like.objects.get_or_create(profile=self.profile, tweet=self)
 
     def __str__(self):
         return f'{self.profile.user.username}: {self.text}'
@@ -59,5 +59,5 @@ class Retweet(Tweet):
         return super().clean()
 
     def save(self, *args, **kwargs):
-        self.clean()
+        # self.clean()
         super().save(*args, **kwargs)
