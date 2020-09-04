@@ -1,4 +1,4 @@
-TODO: modify graphql queries to add pagination ability(hopefully manual isn't painful. do not want to switch to relay just for pagination)
+TODO: add pagination with fetchMore on the client side with Apollo
 TODO: add follow profile mutation
 TODO: add follow profile link on each tweet
 TODO: add password reset

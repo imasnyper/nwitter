@@ -95,10 +95,9 @@ class TweetMutation(graphene.Mutation):
 class Query(graphene.ObjectType):
     all_tweets = graphene.List(TweetType)
     profile_tweets = graphene.List(TweetType, profile=graphene.String(required=True))
-    all_followed_tweets = graphene.List(TweetType)
     get_tweet = graphene.Field(TweetType, id=graphene.Int(required=True))
-    all_followed_tweets_and_retweets = graphene.List(TweetType)
-    all_followed_retweets = graphene.List(RetweetType)
+    all_followed_tweets = graphene.List(TweetType, first=graphene.Int(), after=graphene.Int())
+    all_followed_retweets = graphene.List(RetweetType, first=graphene.Int(), after=graphene.Int())
 
     def resolve_all_tweets(root, info):
         return Tweet.objects.all().order_by("-created")
@@ -109,42 +108,25 @@ class Query(graphene.ObjectType):
         except Tweet.DoesNotExist:
             return None
 
-    def resolve_all_followed_tweets(root, info):
+    def resolve_all_followed_tweets(root, info, first=10, after=1):
         if not info.context.user.is_authenticated:
             return None
         try:
             profile = Profile.objects.get(user__username=info.context.user.username)
             following = profile.following.all()
-            return Tweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by("-created")
+            return Tweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by("-created")[after-1:after-1+first]
         except Tweet.DoesNotExist:
             return None
 
-    def resolve_all_followed_retweets(root, info):
+    def resolve_all_followed_retweets(root, info, first=10, after=1):
         if not info.context.user.is_authenticated:
             return None
         try:
             profile = Profile.objects.get(user__username=info.context.user.username)
             following = profile.following.all()
-            return Retweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by("-created")
+            return Retweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by("-created")[after-1:after-1+first]
         except Retweet.DoesNotExist:
             return None
-
-    def resolve_all_followed_tweets_and_retweets(root, info):
-        if not info.context.user.is_authenticated:
-            return None
-        try:
-            profile = Profile.objects.get(user__username=info.context.user.username)
-            following = profile.following.all()
-            tweets = []
-            # tweets = Tweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by('-created')
-            retweets = Retweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by('-created')
-            result_list = sorted(
-                chain(tweets, retweets),
-                key=lambda instance: instance.created
-            )
-            return result_list
-        finally:
-            pass
 
     def resolve_get_tweet(root, info, id):
         tweet = Tweet.objects.get(id=id)
