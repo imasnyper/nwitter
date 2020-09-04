@@ -108,23 +108,23 @@ class Query(graphene.ObjectType):
         except Tweet.DoesNotExist:
             return None
 
-    def resolve_all_followed_tweets(root, info, first=10, after=1):
+    def resolve_all_followed_tweets(root, info, first=10, after=0):
         if not info.context.user.is_authenticated:
             return None
         try:
             profile = Profile.objects.get(user__username=info.context.user.username)
             following = profile.following.all()
-            return Tweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by("-created")[after-1:after-1+first]
+            return Tweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by("-created")[after:after+first]
         except Tweet.DoesNotExist:
             return None
 
-    def resolve_all_followed_retweets(root, info, first=10, after=1):
+    def resolve_all_followed_retweets(root, info, first=10, after=0):
         if not info.context.user.is_authenticated:
             return None
         try:
             profile = Profile.objects.get(user__username=info.context.user.username)
             following = profile.following.all()
-            return Retweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by("-created")[after-1:after-1+first]
+            return Retweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by("-created")[after:after+first]
         except Retweet.DoesNotExist:
             return None
 

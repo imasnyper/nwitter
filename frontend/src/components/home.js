@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import ComposeTweet from './composeTweet';
 import FollowedTweets from './followedTweets';
 import Header from './header'
@@ -10,6 +10,7 @@ import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown'
 
 export default function Home(props) {
+    const containerRef = useRef(null);
     
     const headerInfo = {
         resendQuery: props.resendQuery, 
@@ -20,7 +21,7 @@ export default function Home(props) {
     }
 
     return (
-        <Container fluid>
+        <Container ref={containerRef} fluid>
             <Row>
                 <Col xs={12}>
                     <Header headerInfo={headerInfo} />
@@ -28,7 +29,7 @@ export default function Home(props) {
             </Row>
             <Row>
                 <Col xs={12}>
-                    <FollowedTweets resendQuery={props.resendQuery} setResendQuery={props.setResendQuery}/>
+                    <FollowedTweets containerRef={containerRef} resendQuery={props.resendQuery} setResendQuery={props.setResendQuery}/>
                 </Col>
             </Row>
         </Container>

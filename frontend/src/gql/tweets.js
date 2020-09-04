@@ -34,11 +34,11 @@ ${tweetFragment}
 `
 
 export const ALL_FOLLOWED_TWEETS_AND_RETWEETS = gql`
-query AllFollowedTweetsAndRetweets {
-  allFollowedTweets {
+query AllFollowedTweetsAndRetweets($first: Int, $after: Int) {
+  allFollowedTweets(first: $first, after: $after) {
     ...TweetFragment
   }
-  allFollowedRetweets {
+  allFollowedRetweets(first: $first, after: $after) {
     ...RetweetFragment
   }
 }
