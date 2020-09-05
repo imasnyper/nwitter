@@ -25,8 +25,8 @@ ${tweetFragment}
 `
 
 export const PROFILE_TWEETS = gql`
-query ProfileTweets($profile: String!) {
-  profileTweets(profile: $profile) {
+query ProfileTweets($profile: String!, $first: Int, $after: Int) {
+  profileTweets(profile: $profile, first: $first, after: $after) {
     ...TweetFragment
   }
 }

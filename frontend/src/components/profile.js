@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useRouteMatch, Switch, Link, Route } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { PROFILE_TWEETS } from '../gql/tweets'
@@ -24,7 +24,45 @@ export default function Profile(props) {
     let { path, url } = useRouteMatch();
     url = removeTrailingSlash(url)
     const { data: profileData, loading: profileLoading, error: profileError } = useQuery(PROFILE, {variables: {profile: viewedUsername}})
-    const { data: tweetData, loading: tweetLoading, error: tweetError, refresh } = useQuery(PROFILE_TWEETS, {variables: {profile: viewedUsername}}) 
+    const { data: tweetData, loading: tweetLoading, error: tweetError, fetchMore } = useQuery(PROFILE_TWEETS, {variables: {profile: viewedUsername}}) 
+
+    const [after, setAfter] = useState(0);
+    const containerRef = useRef(null);
+
+    const isBottom = el => {
+        if (!el) return
+        return el.getBoundingClientRect().bottom <= window.innerHeight;
+    }
+
+    const trackScrolling = () => {
+        const element = containerRef.current
+        if(isBottom(element)) {
+            loadMore()
+        }
+    }
+
+    const loadMore = () => {
+        setAfter(after + 10)
+        fetchMore({
+            variables: {
+                after: after + 10
+            },
+            updateQuery: (prev, {fetchMoreResult}) => {
+                if (!fetchMoreResult) {
+                    setAfter(after - 10)
+                    return prev;
+                }
+                return Object.assign({}, prev, {
+                    profileTweets: [...prev.profileTweets, ...fetchMoreResult.profileTweets]
+                });
+            }
+        })
+    }
+
+    useEffect(() => {
+        document.addEventListener('scroll', trackScrolling)
+        return () => document.removeEventListener('scroll', trackScrolling)
+    })
 
     if(profileLoading || tweetLoading) return <p>Loading... <span role="img" aria-label="hourglass">⌛</span></p>
     if(profileError || tweetError) return <p>Error <span role="img" aria-label="crying">😭</span></p>
@@ -43,7 +81,7 @@ export default function Profile(props) {
     }
 
     return (
-        <Container fluid>
+        <Container ref={containerRef} fluid>
             <Switch>
                 <Route exact path={path}>
                     <Row>

@@ -94,7 +94,7 @@ class TweetMutation(graphene.Mutation):
 
 class Query(graphene.ObjectType):
     all_tweets = graphene.List(TweetType)
-    profile_tweets = graphene.List(TweetType, profile=graphene.String(required=True))
+    profile_tweets = graphene.List(TweetType, profile=graphene.String(required=True), first=graphene.Int(), after=graphene.Int())
     get_tweet = graphene.Field(TweetType, id=graphene.Int(required=True))
     all_followed_tweets = graphene.List(TweetType, first=graphene.Int(), after=graphene.Int())
     all_followed_retweets = graphene.List(RetweetType, first=graphene.Int(), after=graphene.Int())
@@ -102,9 +102,9 @@ class Query(graphene.ObjectType):
     def resolve_all_tweets(root, info):
         return Tweet.objects.all().order_by("-created")
 
-    def resolve_profile_tweets(root, info, profile):
+    def resolve_profile_tweets(root, info, profile, first=10, after=0):
         try:
-            return Tweet.objects.filter(profile__user__username=profile).order_by("-created")
+            return Tweet.objects.filter(profile__user__username=profile).order_by("-created")[after:after+first]
         except Tweet.DoesNotExist:
             return None
 
