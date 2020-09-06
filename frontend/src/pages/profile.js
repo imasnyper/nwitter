@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useRouteMatch, Switch, Link, Route } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/client';
-import { PROFILE_TWEETS } from '../gql/tweets'
-import { PROFILE, FOLLOW_PROFILE_MUTATION } from '../gql/profiles';
-import Tweets from '../components/tweets';
-import Header from '../components/header';
+import { useMutation, useQuery } from '@apollo/client';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button'
-import moment from 'moment';
+import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import Followed from '../components/followed';
+import Header from '../components/header';
+import Tweets from '../components/tweets';
+import { FOLLOW_PROFILE_MUTATION, PROFILE } from '../gql/profiles';
+import { PROFILE_TWEETS } from '../gql/tweets';
 
 const removeTrailingSlash = url => { 
     if(url.length - 1 === url.lastIndexOf('/')) {

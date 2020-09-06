@@ -1,7 +1,7 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useMutation } from '@apollo/client';
+import React, { useEffect, useRef, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { COMPOSE_TWEET_MUTATION } from '../gql/tweets';
-import { useMutation } from '@apollo/client';
 import TweetInput from './tweetInput';
 
 export default function ComposeTweet(props) {

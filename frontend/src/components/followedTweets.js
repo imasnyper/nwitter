@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { useQuery } from '@apollo/client'
-import { ALL_FOLLOWED_TWEETS_AND_RETWEETS } from '../gql/tweets'
-import Tweets from './tweets'
+import { useQuery } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
+import { ALL_FOLLOWED_TWEETS_AND_RETWEETS } from '../gql/tweets';
 import TweetsAndRetweets from './tweetsAndRetweets';
 
 export default function FollowedTweets(props) {

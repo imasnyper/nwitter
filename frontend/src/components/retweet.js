@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { LIKE_TWEET_MUTATION } from '../gql/tweets'
-import ErrorToast from './errorToast';
+import moment from 'moment';
+import React, { useState } from 'react';
+import { ArrowRepeat } from 'react-bootstrap-icons';
+import Badge from 'react-bootstrap/Badge';
+import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
-import Badge from 'react-bootstrap/Badge';
-import { ArrowRepeat } from 'react-bootstrap-icons';
-import Tweet from './tweet';
-import moment from 'moment';
+import { LIKE_TWEET_MUTATION } from '../gql/tweets';
+import ErrorToast from './errorToast';
 import RetweetModal from './retweetModal';
+import Tweet from './tweet';
 
 
 export default function Retweet(props) {

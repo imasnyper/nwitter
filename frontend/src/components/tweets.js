@@ -1,6 +1,5 @@
 import React from 'react';
 import Tweet from './tweet';
-import ListGroup from 'react-bootstrap/ListGroup';
 
 export default function Tweets(props) {
     const { tweets } = props

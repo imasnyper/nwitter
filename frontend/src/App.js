@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Redirect } from 'react-router-dom'
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import './App.css';
-
 import usePersistentState from './lib/persistentState';
-import Login from './pages/login';
+import refreshAuthToken from './lib/refreshAuthToken';
+import FourZeroFour from './pages/fourZeroFour';
 import HomePage from './pages/homePage';
+import Login from './pages/login';
 import Profile from './pages/profile';
 import Signup from './pages/signup';
-import FourZeroFour from './pages/fourZeroFour';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-import moment from 'moment';
-import refreshAuthToken from './lib/refreshAuthToken';
+
 
 function App() {
   const [{username, authToken, refreshToken, tokenExpiryTime}, setRefreshTokenObject] = usePersistentState("refreshTokenObject", {

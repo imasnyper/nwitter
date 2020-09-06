@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react';
 
 export default function usePersistentState(key, defaultValue) {
     // from https://dev.to/selbekk/persisting-your-react-state-in-9-lines-of-code-9go

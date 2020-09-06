@@ -1,10 +1,9 @@
-import React, { useRef } from 'react';
 import { useMutation } from "@apollo/client";
-import { defaultFieldResolver } from 'graphql';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
+import React, { useRef } from 'react';
 import Button from 'react-bootstrap/Button';
-import { RETWEET_TWEET_MUTATION } from '../gql/tweets'
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
+import { RETWEET_TWEET_MUTATION } from '../gql/tweets';
 
 export default function RetweetModal(props) {
     const { tweet } =  props;
