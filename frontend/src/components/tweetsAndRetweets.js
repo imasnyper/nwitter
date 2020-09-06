@@ -4,16 +4,6 @@ import Retweet from './retweet';
 
 export default function TweetsAndRetweets(props) {
     let { tweets, retweets } = props;
-    tweets = tweets.filter(el => {
-        let s = true;
-        for(let rt of retweets) {
-            if ( el.id === rt.id ) {
-                s = false;
-                break;
-            } 
-        }
-        return s
-    })
     let tweetsAndRetweets = tweets.concat(retweets);
     tweetsAndRetweets.sort((a, b) => (a.created < b.created) ? 1 : ((b.created < a.created) ? -1 : 0));
 

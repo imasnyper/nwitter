@@ -27,12 +27,10 @@ class RetweetType(DjangoObjectType):
         fields = "__all__"
 
     def resolve_likes(self, info):
-        likes = Like.objects.filter(tweet=self)
-        return likes
+        return self.likes()
 
     def resolve_retweets(self, info):
-        retweets = Retweet.objects.filter(tweet=self)
-        return retweets
+        return self.retweets()
 
 
 class TweetType(DjangoObjectType):
@@ -101,6 +99,7 @@ class TweetMutation(graphene.Mutation):
 class Query(graphene.ObjectType):
     all_tweets = graphene.List(TweetType)
     profile_tweets = graphene.List(TweetType, profile=graphene.String(required=True), first=graphene.Int(), after=graphene.Int())
+    profile_retweets = graphene.List(RetweetType, profile=graphene.String(required=True), first=graphene.Int(), after=graphene.Int())
     get_tweet = graphene.Field(TweetType, id=graphene.Int(required=True))
     all_followed_tweets = graphene.List(TweetType, first=graphene.Int(), after=graphene.Int())
     all_followed_retweets = graphene.List(RetweetType, first=graphene.Int(), after=graphene.Int())
@@ -112,6 +111,12 @@ class Query(graphene.ObjectType):
         try:
             return Tweet.objects.filter(profile__user__username=profile).order_by("-created")[after:after+first]
         except Tweet.DoesNotExist:
+            return None
+
+    def resolve_profile_retweets(root, info, profile, first=10, after=0):
+        try:
+            return Retweet.objects.filter(profile__user__username=profile).order_by("-created")[after:after+first]
+        except Retweet.DoesNotExist:
             return None
 
     def resolve_all_followed_tweets(root, info, first=10, after=0):

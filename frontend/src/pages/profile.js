@@ -9,9 +9,9 @@ import Row from 'react-bootstrap/Row';
 import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import Followed from '../components/followed';
 import Header from '../components/header';
-import Tweets from '../components/tweets';
 import { FOLLOW_PROFILE_MUTATION, PROFILE } from '../gql/profiles';
 import { PROFILE_TWEETS } from '../gql/tweets';
+import TweetsAndRetweets from '../components/tweetsAndRetweets';
 
 const removeTrailingSlash = url => { 
     if(url.length - 1 === url.lastIndexOf('/')) {
@@ -26,7 +26,7 @@ export default function Profile(props) {
     url = removeTrailingSlash(url)
     const { data: userProfileData, loading: userProfileLoading, error: userProfileError } = useQuery(PROFILE, {variables: {profile: props.username}})
     const { data: profileData, loading: profileLoading, error: profileError, refetch: profileRefetch } = useQuery(PROFILE, {variables: {profile: viewedUsername}})
-    const { data: tweetData, loading: tweetLoading, error: tweetError, fetchMore } = useQuery(PROFILE_TWEETS, {variables: {profile: viewedUsername}}) 
+    const { data, loading: tweetLoading, error: tweetError, fetchMore } = useQuery(PROFILE_TWEETS, {variables: {profile: viewedUsername}}) 
     const [ followProfile, {error}] = useMutation(FOLLOW_PROFILE_MUTATION, {onError: () => {}})
 
     const [after, setAfter] = useState(0);
@@ -70,7 +70,8 @@ export default function Profile(props) {
     if(profileLoading || tweetLoading || userProfileLoading) return <p>Loading... <span role="img" aria-label="hourglass">⌛</span></p>
     if(profileError || tweetError || userProfileError) return <p>Error <span role="img" aria-label="crying">😭</span></p>
 
-    const tweets = tweetData.profileTweets
+    const profileTweets = data.profileTweets
+    const profileRetweets = data.profileRetweets
     const profile = profileData.profile
     const userProfile = userProfileData.profile
 
@@ -124,7 +125,7 @@ export default function Profile(props) {
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <Tweets setResendQuery={props.setResendQuery} tweets={tweets} />
+                            <TweetsAndRetweets setResendQuery={props.setResendQuery} tweets={profileTweets} retweets={profileRetweets}/>
                         </Col>
                     </Row>
                 </Route>

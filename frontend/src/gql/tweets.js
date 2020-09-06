@@ -29,8 +29,12 @@ query ProfileTweets($profile: String!, $first: Int, $after: Int) {
   profileTweets(profile: $profile, first: $first, after: $after) {
     ...TweetFragment
   }
+  profileRetweets(profile: $profile, first: $first, after: $after) {
+    ...RetweetFragment
+  }
 }
 ${tweetFragment}
+${retweetFragment}
 `
 
 export const ALL_FOLLOWED_TWEETS_AND_RETWEETS = gql`

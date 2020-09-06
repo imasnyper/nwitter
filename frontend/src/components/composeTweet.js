@@ -9,6 +9,13 @@ export default function ComposeTweet(props) {
     const [text, setText] = useState("");
     const [createTweet] = useMutation(COMPOSE_TWEET_MUTATION);
 
+    // useEffect(() => {
+    //     console.log(input.current)
+    //     if(input.current) {
+    //         input.current.focus()
+    //     }
+    // })
+
     useEffect(() => {
         if(props.resendQuery) {
             input.current.value = ""
