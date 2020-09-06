@@ -1,5 +1,6 @@
 import graphene
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from graphene_django import DjangoObjectType
 
 from profiles.models import Profile
@@ -23,6 +24,20 @@ class ProfileType(DjangoObjectType):
         user = Profile.objects.get(user__username=self.user.username)
         return user.followers()
 
+
+class FollowProfileMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.Int(required=True)
+    
+    profile = graphene.Field(ProfileType)
+
+    def mutate(self, info, id):
+        profile_to_follow = get_object_or_404(Profile, pk=id)
+        profile = Profile.objects.get(user__username=info.context.user.username)
+        profile.following.add(profile_to_follow)
+
+        return FollowProfileMutation(profile=profile)
+
 class Query(graphene.ObjectType):
     all_users = graphene.List(UserType)
     all_profiles = graphene.List(ProfileType)
@@ -38,4 +53,8 @@ class Query(graphene.ObjectType):
         profile = Profile.objects.get(user__username=profile)
         return profile
 
-schema = graphene.Schema(query=Query)
+
+class Mutation(graphene.ObjectType):
+    follow_profile = FollowProfileMutation.Field()
+
+schema = graphene.Schema(query=Query, mutation=Mutation)

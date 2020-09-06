@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
-import ComposeTweet from './composeTweet';
-import FollowedTweets from './followedTweets';
-import Header from './header'
+import FollowedTweets from '../components/followedTweets';
+import Header from '../components/header'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -9,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown'
 
-export default function Home(props) {
+export default function HomePage(props) {
     const containerRef = useRef(null);
     
     const headerInfo = {

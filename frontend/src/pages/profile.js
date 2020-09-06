@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useRouteMatch, Switch, Link, Route } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { PROFILE_TWEETS } from '../gql/tweets'
-import { PROFILE } from '../gql/users';
-import Tweets from './tweets';
-import Header from './header';
+import { PROFILE, FOLLOW_PROFILE_MUTATION } from '../gql/profiles';
+import Tweets from '../components/tweets';
+import Header from '../components/header';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button'
 import moment from 'moment';
-import Followed from './followed';
+import Followed from '../components/followed';
 
 const removeTrailingSlash = url => { 
     if(url.length - 1 === url.lastIndexOf('/')) {
@@ -23,8 +24,10 @@ export default function Profile(props) {
     const { username: viewedUsername } = useParams();
     let { path, url } = useRouteMatch();
     url = removeTrailingSlash(url)
-    const { data: profileData, loading: profileLoading, error: profileError } = useQuery(PROFILE, {variables: {profile: viewedUsername}})
+    const { data: userProfileData, loading: userProfileLoading, error: userProfileError } = useQuery(PROFILE, {variables: {profile: props.username}})
+    const { data: profileData, loading: profileLoading, error: profileError, refetch: profileRefetch } = useQuery(PROFILE, {variables: {profile: viewedUsername}})
     const { data: tweetData, loading: tweetLoading, error: tweetError, fetchMore } = useQuery(PROFILE_TWEETS, {variables: {profile: viewedUsername}}) 
+    const [ followProfile, {error}] = useMutation(FOLLOW_PROFILE_MUTATION, {onError: () => {}})
 
     const [after, setAfter] = useState(0);
     const containerRef = useRef(null);
@@ -64,11 +67,12 @@ export default function Profile(props) {
         return () => document.removeEventListener('scroll', trackScrolling)
     })
 
-    if(profileLoading || tweetLoading) return <p>Loading... <span role="img" aria-label="hourglass">⌛</span></p>
-    if(profileError || tweetError) return <p>Error <span role="img" aria-label="crying">😭</span></p>
+    if(profileLoading || tweetLoading || userProfileLoading) return <p>Loading... <span role="img" aria-label="hourglass">⌛</span></p>
+    if(profileError || tweetError || userProfileError) return <p>Error <span role="img" aria-label="crying">😭</span></p>
 
     const tweets = tweetData.profileTweets
     const profile = profileData.profile
+    const userProfile = userProfileData.profile
 
     const createdTime = moment(profile.created)
 
@@ -78,6 +82,20 @@ export default function Profile(props) {
         username: props.username, 
         handleLogout: props.handleLogout,
         handleTime: props.handleTime
+    }
+
+
+    const handleFollow = () => {
+        followProfile({variables: {id: profile.id}})
+        // profileRefetch()
+    }
+
+    const checkNotFollowing = (userProfile, checkProfile) => {
+        const userFollowing = userProfile.following
+        const followedUsernames = userFollowing.map(profile => {
+            return profile.user.username
+        })
+        return !followedUsernames.includes(checkProfile)
     }
 
     return (
@@ -99,15 +117,16 @@ export default function Profile(props) {
                                     <p>Has been a member for {createdTime.from(moment(), true)}</p>
                                     <p><Link to={`${url}/followed`}>Following: {profile.following.length}</Link></p>
                                     <p><Link to={`${url}/followed`}>Followers: {profile.followers.length}</Link></p>
+                                    {(userProfile.user.username !== viewedUsername && checkNotFollowing(userProfile, viewedUsername)) ? <Button onClick={handleFollow}>Follow</Button> : <></>}
                                 </Card.Body>
                             </Card>
                         </Col>
                     </Row>
                     <Row>
-                    <Col xs={12}>
-                        <Tweets setResendQuery={props.setResendQuery} tweets={tweets} />
-                    </Col>
-                </Row>
+                        <Col xs={12}>
+                            <Tweets setResendQuery={props.setResendQuery} tweets={tweets} />
+                        </Col>
+                    </Row>
                 </Route>
                 <Route path={`${path}/followed`}>
                     <Followed headerInfo={headerInfo} following={profile.following} followers={profile.followers} />

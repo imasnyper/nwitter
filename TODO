@@ -1,4 +1,12 @@
-TODO: add follow profile mutation
-TODO: add follow profile link on each tweet
+TODO: trim down home page tweet query to improve loading times
+TODO: add singular tweet page
+TODO: add links to each tweet page from lists of tweets on home page and profile pages
+TODO: add reply tweet type
+TODO: add reply tweet mutation
+TODO: add reply to tweet button on each tweet
+TODO: add replies to tweet page
+TODO: add # and @ parsing to tweet text
+TODO: add # tweet results page
+TODO: add new media types to tweets - images, videos, etc
 TODO: add password reset
 TODO: style EVERYTHING

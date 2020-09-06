@@ -7,7 +7,7 @@ import tweets.schema
 class Query(tweets.schema.Query, profiles.schema.Query, graphene.ObjectType):
     pass
 
-class Mutation(tweets.schema.Mutation, graphene.ObjectType):
+class Mutation(tweets.schema.Mutation, profiles.schema.Mutation, graphene.ObjectType):
     pass
 
 

@@ -4,11 +4,11 @@ import { Redirect } from 'react-router-dom'
 import './App.css';
 
 import usePersistentState from './lib/persistentState';
-import Login from './components/login';
-import Home from './components/home';
-import Profile from './components/profile';
-import Signup from './components/signup';
-import FourZeroFour from './components/fourZeroFour';
+import Login from './pages/login';
+import HomePage from './pages/homePage';
+import Profile from './pages/profile';
+import Signup from './pages/signup';
+import FourZeroFour from './pages/fourZeroFour';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import moment from 'moment';
 import refreshAuthToken from './lib/refreshAuthToken';
@@ -48,13 +48,6 @@ function App() {
     }
   }, [difference, refreshToken, setRefreshTokenObject, tokenExpiryTime, username])
 
-  // if(authToken === "") {
-  //   return <Login 
-  //     setRefreshTokenObject={setRefreshTokenObject}
-  //     username={username}
-  //   />
-  // }
-
   const client = new ApolloClient({
     uri: "http://localhost:8000/graphql/",
     headers: {
@@ -91,7 +84,7 @@ function App() {
           <Route exact path="/">
             {authToken === ""           ? 
               <Redirect to="/login" />  : 
-              <Home 
+              <HomePage 
                 username={username} 
                 authToken={authToken} 
                 handleLogout={handleLogout} 
@@ -102,13 +95,16 @@ function App() {
             }
           </Route>
           <Route path="/profiles/:username">
-            <Profile 
-              username={username}
-              handleLogout={handleLogout}
-              handleTime={handleTime}
-              resendQuery={resendQuery}
-              setResendQuery={setResendQuery}
-            />
+            {authToken === ""           ?
+              <Redirect to="/login" />  :
+              <Profile 
+                username={username}
+                handleLogout={handleLogout}
+                handleTime={handleTime}
+                resendQuery={resendQuery}
+                setResendQuery={setResendQuery}
+              />
+            }
           </Route>
           <Route path="/login">
             <Login 

@@ -8,6 +8,8 @@ export default function FollowedTweets(props) {
     const { data, loading, error, refetch, fetchMore } = useQuery(ALL_FOLLOWED_TWEETS_AND_RETWEETS)
     const [after, setAfter] = useState(0);
 
+    console.log(props.setResendQuery)
+
     const isBottom = el => {
         if (!el) return
         return el.getBoundingClientRect().bottom <= window.innerHeight;
@@ -16,6 +18,7 @@ export default function FollowedTweets(props) {
     const trackScrolling = () => {
         const element = props.containerRef.current
         if(isBottom(element)) {
+            console.log('at bottom, loading more')
             loadMore()
         }
     }
@@ -30,6 +33,9 @@ export default function FollowedTweets(props) {
                 if (!fetchMoreResult) {
                     setAfter(after - 10)
                     return prev;
+                }
+                if (!prev.allFollowedTweets || !prev.allFollowedRetweets) {
+                    return
                 }
                 return Object.assign({}, prev, {
                     allFollowedTweets: [...prev.allFollowedTweets, ...fetchMoreResult.allFollowedTweets],

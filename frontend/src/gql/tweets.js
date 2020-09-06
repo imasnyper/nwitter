@@ -78,3 +78,14 @@ mutation LikeTweet($id: Int!) {
 }
 ${tweetFragment}
 `
+
+export const RETWEET_TWEET_MUTATION = gql`
+mutation RetweetTweet($id: Int!, $text: String) {
+  retweetTweet(id: $id, text: $text) {
+    tweet {
+      ...TweetFragment
+    }
+  }
+}
+${tweetFragment}
+`

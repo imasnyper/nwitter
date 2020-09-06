@@ -20,6 +20,7 @@ class LikeType(DjangoObjectType):
 
 class RetweetType(DjangoObjectType):
     likes = graphene.List(LikeType)
+    retweets = graphene.List(lambda: RetweetType)
 
     class Meta:
         model = Retweet
@@ -28,6 +29,11 @@ class RetweetType(DjangoObjectType):
     def resolve_likes(self, info):
         likes = Like.objects.filter(tweet=self)
         return likes
+
+    def resolve_retweets(self, info):
+        retweets = Retweet.objects.filter(tweet=self)
+        return retweets
+
 
 class TweetType(DjangoObjectType):
     likes = graphene.List(LikeType)
@@ -75,7 +81,6 @@ class TweetRetweetMutation(graphene.Mutation):
         return TweetRetweetMutation(tweet=tweet)
 
 
-
 class TweetMutation(graphene.Mutation):
     class Arguments:
         text = graphene.String(required=True)
@@ -91,6 +96,7 @@ class TweetMutation(graphene.Mutation):
         tweet = Tweet.objects.create(profile=profile, text=text)
 
         return TweetMutation(tweet=tweet)
+
 
 class Query(graphene.ObjectType):
     all_tweets = graphene.List(TweetType)
@@ -137,6 +143,7 @@ class Query(graphene.ObjectType):
 class Mutation(graphene.ObjectType):
     create_tweet = TweetMutation.Field()
     like_tweet = TweetLikeMutation.Field()
+    retweet_tweet = TweetRetweetMutation.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
