@@ -10,12 +10,14 @@ import { LIKE_TWEET_MUTATION } from '../gql/tweets';
 import ErrorToast from './errorToast';
 import RetweetModal from './retweetModal';
 import Tweet from './tweet';
+import { useHistory } from 'react-router-dom';
 
 
 export default function Retweet(props) {
     const { retweet } = props
     const [show, setShow] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const history = useHistory();
 
     const [ likeTweet, {error} ] = useMutation(LIKE_TWEET_MUTATION, {onError: () => setShow(true)})
 
@@ -27,7 +29,7 @@ export default function Retweet(props) {
     return (
         <>
             <ErrorToast show={show} setShow={setShow} error={error}/>
-            <Card className="tweet-card">
+            <Card onClick={() => history.push(`/retweet/${retweet.id}`)} style={{cursor: "pointer"}} className="tweet-card">
                 <Card.Body>
                     <Card.Title>
                         <span><Link to={`/profiles/${retweet.profile.user.username}`}>{retweet.profile.user.username}</Link></span>
@@ -39,13 +41,13 @@ export default function Retweet(props) {
                     <div style={{paddingBottom: "1rem"}}>
                         <Tweet setResendQuery={props.setResendQuery} tweet={retweet.tweet} />
                     </div>
-                    <span style={{paddingRight: ".5rem"}}>
-                        <Button onClick={handleLike}>
+                    <span onClick={e => {e.stopPropagation(); handleLike()}} style={{paddingRight: ".5rem"}}>
+                        <Button >
                             ❤ <Badge variant="light">{retweet.likes.length}</Badge>
                         </Button>
                     </span>
-                    <span>
-                        <Button onClick={() => setShowModal(true)}>
+                    <span onClick={(e) => {e.stopPropagation(); setShowModal(true)}}>
+                        <Button>
                             <ArrowRepeat size={22}/> <Badge variant="light">{retweet.retweets.length}</Badge>
                         </Button>
                     </span>

@@ -9,7 +9,6 @@ export default function RetweetModal(props) {
     const { tweet } =  props;
     const [ retweetTweet, {error} ] = useMutation(RETWEET_TWEET_MUTATION)
     const input = useRef(null)
-    console.log(props)
 
     const handleSubmit = e => {
         e.preventDefault()

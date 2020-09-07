@@ -7,8 +7,6 @@ export default function FollowedTweets(props) {
     const { data, loading, error, refetch, fetchMore } = useQuery(ALL_FOLLOWED_TWEETS_AND_RETWEETS)
     const [after, setAfter] = useState(0);
 
-    console.log(props.setResendQuery)
-
     const isBottom = el => {
         if (!el) return
         return el.getBoundingClientRect().bottom <= window.innerHeight;

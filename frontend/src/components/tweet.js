@@ -9,13 +9,13 @@ import { Link } from 'react-router-dom';
 import { LIKE_TWEET_MUTATION, RETWEET_TWEET_MUTATION } from '../gql/tweets';
 import ErrorToast from './errorToast';
 import RetweetModal from './retweetModal';
+import { useHistory } from 'react-router-dom';
 
 export default function Tweet(props) {
     const { tweet, setResendQuery } = props
     const [showError, setshowError] = useState(false);
     const [showModal, setShowModal] = useState(false);
-
-    console.log(props)
+    const history = useHistory();
 
     const [ likeTweet, {error: tweetError} ] = useMutation(LIKE_TWEET_MUTATION, {onError: () => {setshowError(true)}})
     const [ retweetTweet, {error: retweetError} ] = useMutation(RETWEET_TWEET_MUTATION, {onError: () => {setshowError(true)}})
@@ -28,24 +28,22 @@ export default function Tweet(props) {
     return (
         <>
             <ErrorToast show={showError} setShow={setshowError} error={tweetError}/>
-            <Card className="tweet-card">
+            <Card onClick={e => {e.stopPropagation(); history.push(`/tweet/${tweet.id}`)}} className="tweet-card" style={{cursor: "pointer"}}>
                 <Card.Body>
-
                     <Card.Title>
                         <span><Link to={`/profiles/${tweet.profile.user.username}`}>{tweet.profile.user.username}</Link></span>
                         <span style={{fontStyle: "normal", fontSize: ".75rem"}}>&nbsp;-&nbsp;tweeted {moment(tweet.created).fromNow()}</span>
                     </Card.Title>
-
                     <Card.Text>
                         {tweet.text}
                     </Card.Text>
-                    <span style={{paddingRight: ".5rem"}}>
-                        <Button onClick={handleLike}>
+                    <span onClick={e => { e.stopPropagation(); handleLike() }} style={{paddingRight: ".5rem", zIndex: "999"}}>
+                        <Button style={{zIndex: "99999"}} >
                             ❤ <Badge variant="light">{tweet.likes.length}</Badge>
                         </Button>
                     </span>
-                    <span>
-                        <Button onClick={() => setShowModal(true)}>
+                    <span onClick={e => { e.stopPropagation(); setShowModal(true) }} style={{paddingRight: ".5rem", zIndex: "999"}}>
+                        <Button style={{zIndex: "99999"}}>
                             <ArrowRepeat size={22}/> <Badge variant="light">{tweet.retweets.length}</Badge>
                         </Button>
                     </span>

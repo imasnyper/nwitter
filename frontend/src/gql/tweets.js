@@ -61,6 +61,15 @@ query getTweet($id: Int!) {
 ${tweetFragment}
 `
 
+export const GET_RETWEET = gql`
+query getRetweet($id: Int!) {
+  getRetweet(id: $id) {
+    ...RetweetFragment
+  }
+}
+${retweetFragment}
+`
+
 export const COMPOSE_TWEET_MUTATION = gql`
 mutation CreateTweet($text: String!) {
   createTweet(text: $text) {

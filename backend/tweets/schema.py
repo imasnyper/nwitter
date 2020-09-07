@@ -101,6 +101,7 @@ class Query(graphene.ObjectType):
     profile_tweets = graphene.List(TweetType, profile=graphene.String(required=True), first=graphene.Int(), after=graphene.Int())
     profile_retweets = graphene.List(RetweetType, profile=graphene.String(required=True), first=graphene.Int(), after=graphene.Int())
     get_tweet = graphene.Field(TweetType, id=graphene.Int(required=True))
+    get_retweet = graphene.Field(RetweetType, id=graphene.Int(required=True))
     all_followed_tweets = graphene.List(TweetType, first=graphene.Int(), after=graphene.Int())
     all_followed_retweets = graphene.List(RetweetType, first=graphene.Int(), after=graphene.Int())
 
@@ -143,6 +144,11 @@ class Query(graphene.ObjectType):
         tweet = Tweet.objects.get(id=id)
 
         return tweet
+
+    def resolve_get_retweet(root, info, id):
+        retweet = Retweet.objects.get(id=id)
+
+        return retweet
 
 
 class Mutation(graphene.ObjectType):

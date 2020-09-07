@@ -10,6 +10,8 @@ import HomePage from './pages/homePage';
 import Login from './pages/login';
 import Profile from './pages/profile';
 import Signup from './pages/signup';
+import TweetPage from './pages/tweetPage';
+import RetweetPage from './pages/retweetPage';
 
 
 function App() {
@@ -97,6 +99,30 @@ function App() {
             {authToken === ""           ?
               <Redirect to="/login" />  :
               <Profile 
+                username={username}
+                handleLogout={handleLogout}
+                handleTime={handleTime}
+                resendQuery={resendQuery}
+                setResendQuery={setResendQuery}
+              />
+            }
+          </Route>
+          <Route path="/tweet/:id">
+            {authToken === ""           ?
+              <Redirect to="/login" />    :
+              <TweetPage 
+                username={username}
+                handleLogout={handleLogout}
+                handleTime={handleTime}
+                resendQuery={resendQuery}
+                setResendQuery={setResendQuery}
+              />
+            }
+          </Route>
+          <Route path="/retweet/:id">
+            {authToken === ""           ?
+              <Redirect to="/login" />    :
+              <RetweetPage 
                 username={username}
                 handleLogout={handleLogout}
                 handleTime={handleTime}
