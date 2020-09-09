@@ -6,7 +6,7 @@ import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
-import { LIKE_TWEET_MUTATION, RETWEET_TWEET_MUTATION } from '../gql/tweets';
+import { LIKE_TWEET_MUTATION } from '../gql/tweets';
 import ErrorToast from './errorToast';
 import RetweetModal from './retweetModal';
 import { useHistory } from 'react-router-dom';
@@ -18,7 +18,6 @@ export default function Tweet(props) {
     const history = useHistory();
 
     const [ likeTweet, {error: tweetError} ] = useMutation(LIKE_TWEET_MUTATION, {onError: () => {setshowError(true)}})
-    const [ retweetTweet, {error: retweetError} ] = useMutation(RETWEET_TWEET_MUTATION, {onError: () => {setshowError(true)}})
     
     const handleLike = () => {
         likeTweet({variables: {id: tweet.id}})
@@ -31,7 +30,7 @@ export default function Tweet(props) {
             <Card onClick={e => {e.stopPropagation(); history.push(`/tweet/${tweet.id}`)}} className="tweet-card" style={{cursor: "pointer"}}>
                 <Card.Body>
                     <Card.Title>
-                        <span><Link to={`/profiles/${tweet.profile.user.username}`}>{tweet.profile.user.username}</Link></span>
+                        <span><Link onClick={e => e.stopPropagation()} to={`/profiles/${tweet.profile.user.username}`}>{tweet.profile.user.username}</Link></span>
                         <span style={{fontStyle: "normal", fontSize: ".75rem"}}>&nbsp;-&nbsp;tweeted {moment(tweet.created).fromNow()}</span>
                     </Card.Title>
                     <Card.Text>

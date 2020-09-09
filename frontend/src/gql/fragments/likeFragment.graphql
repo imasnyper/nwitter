@@ -1,15 +1,12 @@
-#import "./ProfileFragment.graphql"
-
 fragment LikeFragment on LikeType {
   id
   profile {
-    ...ProfileFragment
+    id
   }
   tweet {
     id
-    text
     profile {
-      ...ProfileFragment
+      id
     }
   }
 }

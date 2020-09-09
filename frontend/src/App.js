@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-d
 import './App.css';
 import usePersistentState from './lib/persistentState';
 import refreshAuthToken from './lib/refreshAuthToken';
+import { afterFirstPagination } from './lib/afterFirstPagination';
 import FourZeroFour from './pages/fourZeroFour';
 import HomePage from './pages/homePage';
 import Login from './pages/login';
@@ -31,6 +32,7 @@ function App() {
 
   useEffect(() => {
     const handleRefresh = async () => {
+      console.log("handle refresh called")
       const data = await refreshAuthToken(
         username, 
         refreshToken, 
@@ -44,9 +46,10 @@ function App() {
       })
     }
 
-    if(refreshToken !== "" && difference.minutes() < 5 && difference.minutes() !== 0) {
-      handleRefresh();
-    }
+    const timeoutTime = (difference.minutes() - 5) * 60 * 1000
+    // const timer = setTimeout(() => handleRefresh(), timeoutTime)
+
+    // return () => clearTimeout(timer);
   }, [difference, refreshToken, setRefreshTokenObject, tokenExpiryTime, username])
 
   const client = new ApolloClient({

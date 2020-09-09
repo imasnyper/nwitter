@@ -21,19 +21,19 @@ export default function FollowedTweets(props) {
     }
 
     const loadMore = () => {
-        setAfter(after + 10)
         fetchMore({
             variables: {
                 after: after + 10
             },
+            // TODO: implement https://github.com/apollographql/apollo-client/issues/6502
             updateQuery: (prev, {fetchMoreResult}) => {
-                if (!fetchMoreResult) {
-                    setAfter(after - 10)
+                if (!fetchMoreResult || (fetchMoreResult.allFollowedTweets.length == 0 && fetchMoreResult.allFollowedRetweets.length == 0)) {
                     return prev;
                 }
                 if (!prev.allFollowedTweets || !prev.allFollowedRetweets) {
                     return
                 }
+                setAfter(after + 10)
                 return Object.assign({}, prev, {
                     allFollowedTweets: [...prev.allFollowedTweets, ...fetchMoreResult.allFollowedTweets],
                     allFollowedRetweets: [...prev.allFollowedRetweets, ...fetchMoreResult.allFollowedRetweets]

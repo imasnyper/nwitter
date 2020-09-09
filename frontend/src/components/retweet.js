@@ -32,7 +32,7 @@ export default function Retweet(props) {
             <Card onClick={() => history.push(`/retweet/${retweet.id}`)} style={{cursor: "pointer"}} className="tweet-card">
                 <Card.Body>
                     <Card.Title>
-                        <span><Link to={`/profiles/${retweet.profile.user.username}`}>{retweet.profile.user.username}</Link></span>
+                        <span><Link onClick={e => e.stopPropagation()} to={`/profiles/${retweet.profile.user.username}`}>{retweet.profile.user.username}</Link></span>
                         <span style={{fontStyle: "normal", fontSize: ".75rem"}}>&nbsp;-&nbsp;tweeted {moment(retweet.created).fromNow()}</span>
                     </Card.Title>
                     <Card.Text>

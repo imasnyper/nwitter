@@ -1,4 +1,4 @@
-fragment ProfileFragment on ProfileType {
+fragment ProfileDetailFragment on ProfileType {
   id 
   user {
     id

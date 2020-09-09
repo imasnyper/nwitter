@@ -1,0 +1,12 @@
+fragment ProfileOverviewFragment on ProfileType {
+  id 
+  user {
+    id
+  }
+  following {
+    id
+  }
+  followers {
+    id
+  }
+}

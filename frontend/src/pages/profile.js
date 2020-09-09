@@ -25,9 +25,9 @@ export default function Profile(props) {
     let { path, url } = useRouteMatch();
     url = removeTrailingSlash(url)
     const { data: userProfileData, loading: userProfileLoading, error: userProfileError } = useQuery(PROFILE, {variables: {profile: props.username}})
-    const { data: profileData, loading: profileLoading, error: profileError, refetch: profileRefetch } = useQuery(PROFILE, {variables: {profile: viewedUsername}})
+    const { data: profileData, loading: profileLoading, error: profileError } = useQuery(PROFILE, {variables: {profile: viewedUsername}})
     const { data, loading: tweetLoading, error: tweetError, fetchMore } = useQuery(PROFILE_TWEETS, {variables: {profile: viewedUsername}}) 
-    const [ followProfile, {error}] = useMutation(FOLLOW_PROFILE_MUTATION, {onError: () => {}})
+    const [ followProfile ] = useMutation(FOLLOW_PROFILE_MUTATION, {onError: () => {}})
 
     const [after, setAfter] = useState(0);
     const containerRef = useRef(null);
@@ -41,20 +41,22 @@ export default function Profile(props) {
         const element = containerRef.current
         if(isBottom(element)) {
             loadMore()
+            console.log("at bottom loading more")
         }
+        
     }
 
     const loadMore = () => {
-        setAfter(after + 10)
+        
         fetchMore({
             variables: {
                 after: after + 10
             },
             updateQuery: (prev, {fetchMoreResult}) => {
-                if (!fetchMoreResult) {
-                    setAfter(after - 10)
+                if (!fetchMoreResult || (fetchMoreResult.profileTweets.length === 0 && fetchMoreResult.profileRetweets.length === 0)) {
                     return prev;
                 }
+                setAfter(after + 10)
                 return Object.assign({}, prev, {
                     profileTweets: [...prev.profileTweets, ...fetchMoreResult.profileTweets]
                 });
@@ -98,6 +100,8 @@ export default function Profile(props) {
         })
         return !followedUsernames.includes(checkProfile)
     }
+
+    console.log(after)
 
     return (
         <Container ref={containerRef} fluid>

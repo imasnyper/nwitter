@@ -1,104 +1,102 @@
 import { gql } from '@apollo/client'
 import { loader } from 'graphql.macro'
 
-const profileFragment = loader('./fragments/profileFragment.graphql')
+// const profileDetailFragment = loader('./fragments/profileDetailFragment.graphql')
 const likeFragment = loader('./fragments/likeFragment.graphql')
-const retweetFragment = loader('./fragments/retweetFragment.graphql')
-const tweetFragment = loader('./fragments/tweetFragment.graphql')
+const retweetDetailFragment = loader('./fragments/retweetDetailFragment.graphql')
+const tweetDetailFragment = loader('./fragments/tweetDetailFragment.graphql')
 
 export const ALL_TWEETS = gql`
 query AllTweets {
   allTweets { 
-    ...TweetFragment
+    ...TweetDetailFragment
   }
 }
-${tweetFragment}
+${tweetDetailFragment}
 `
 
 export const ALL_FOLLOWED_TWEETS = gql`
 query AllFollowedTweets {
   allFollowedTweets {
-    ...TweetFragment 
+    ...TweetDetailFragment 
   } 
 }
-${tweetFragment}
+${tweetDetailFragment}
 `
 
 export const PROFILE_TWEETS = gql`
 query ProfileTweets($profile: String!, $first: Int, $after: Int) {
   profileTweets(profile: $profile, first: $first, after: $after) {
-    ...TweetFragment
+    ...TweetDetailFragment
   }
   profileRetweets(profile: $profile, first: $first, after: $after) {
-    ...RetweetFragment
+    ...RetweetDetailFragment
   }
 }
-${tweetFragment}
-${retweetFragment}
+${tweetDetailFragment}
+${retweetDetailFragment}
 `
 
 export const ALL_FOLLOWED_TWEETS_AND_RETWEETS = gql`
 query AllFollowedTweetsAndRetweets($first: Int, $after: Int) {
   allFollowedTweets(first: $first, after: $after) {
-    ...TweetFragment
+    ...TweetDetailFragment
   }
   allFollowedRetweets(first: $first, after: $after) {
-    ...RetweetFragment
+    ...RetweetDetailFragment
   }
 }
-${tweetFragment}
-${retweetFragment}
-${profileFragment}
-${likeFragment}
+${tweetDetailFragment}
+${retweetDetailFragment}
 `
 
 export const GET_TWEET = gql`
 query getTweet($id: Int!) {
   getTweet(id: $id) {
-    ...TweetFragment
+    ...TweetDetailFragment
   }
 }
-${tweetFragment}
+${tweetDetailFragment}
 `
 
 export const GET_RETWEET = gql`
 query getRetweet($id: Int!) {
   getRetweet(id: $id) {
-    ...RetweetFragment
+    ...RetweetDetailFragment
   }
 }
-${retweetFragment}
+${retweetDetailFragment}
 `
 
 export const COMPOSE_TWEET_MUTATION = gql`
 mutation CreateTweet($text: String!) {
   createTweet(text: $text) {
     tweet {
-      ...TweetFragment
+      ...TweetDetailFragment
     }
   }
 }
-${tweetFragment}
+${tweetDetailFragment}
 `
 
 export const LIKE_TWEET_MUTATION = gql`
 mutation LikeTweet($id: Int!) {
   likeTweet(id: $id) {
     tweet {
-      ...TweetFragment
+      ...TweetDetailFragment
     }
   }
 }
-${tweetFragment}
+${tweetDetailFragment}
 `
 
 export const RETWEET_TWEET_MUTATION = gql`
 mutation RetweetTweet($id: Int!, $text: String) {
   retweetTweet(id: $id, text: $text) {
     tweet {
-      ...TweetFragment
+      ...TweetDetailFragment
     }
   }
 }
-${tweetFragment}
+${tweetDetailFragment}
 `

@@ -1,15 +1,15 @@
 import { gql } from '@apollo/client'
 import { loader } from 'graphql.macro'
 
-const profileFragment = loader('./fragments/profileFragment.graphql')
+const profileDetailFragment = loader('./fragments/profileDetailFragment.graphql')
 
 export const PROFILE = gql`
 query GetProfile($profile: String!) {
   profile(profile: $profile) {
-    ...ProfileFragment
+    ...ProfileDetailFragment
   }
 }
-${profileFragment}
+${profileDetailFragment}
 `
 
 
@@ -17,9 +17,9 @@ export const FOLLOW_PROFILE_MUTATION = gql`
 mutation FollowProfile($id: Int!) {
   followProfile(id: $id) {
     profile {
-      ...ProfileFragment 
+      ...ProfileDetailFragment 
     }
   }
 }
-${profileFragment}
+${profileDetailFragment}
 `
