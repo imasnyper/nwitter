@@ -1,6 +1,4 @@
-TODO: trim down home page tweet query to improve loading times
-TODO: add singular tweet page
-TODO: add links to each tweet page from lists of tweets on home page and profile pages
+TODO: fix refreshToken auto refresh on frontend
 TODO: add reply tweet type
 TODO: add reply tweet mutation
 TODO: add reply to tweet button on each tweet
