@@ -27,17 +27,23 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             user = User.objects.get(username=serializer.validated_data['username'])
-            token, created = RefreshToken.objects.get_or_create(user=user)
+            # token, created = RefreshToken.objects.get_or_create(user=user)
+            try:
+                t = RefreshToken.objects.get(user=user)
+                t.delete()
+            except RefreshToken.DoesNotExist:
+                pass
+            token = RefreshToken.objects.create(user=user)
 
-            utc_now = timezone.now()
+            # utc_now = timezone.now()
 
-            five_minutes_until_expiry = token.created + datetime.timedelta(minutes=CLIENT_TOKEN_EXPIRY_TIME - 5)
+            # five_minutes_until_expiry = token.created + datetime.timedelta(minutes=CLIENT_TOKEN_EXPIRY_TIME - 5)
 
-            if not created and (utc_now - five_minutes_until_expiry).seconds < (5 * 60):
-                token.delete()
-                token = RefreshToken.objects.create(user=user)
-                token.created = utc_now
-                token.save()
+            # if not created and (utc_now - five_minutes_until_expiry).seconds < (5 * 60):
+            #     token.delete()
+            #     token = RefreshToken.objects.create(user=user)
+            #     token.created = utc_now
+            #     token.save()
 
             token_expiry_time = (token.created + datetime.timedelta(
                 minutes=CLIENT_TOKEN_EXPIRY_TIME)).timestamp()

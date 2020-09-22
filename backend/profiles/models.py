@@ -9,7 +9,7 @@ class Profile(models.Model):
     birthday = models.DateField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    following = models.ManyToManyField('self', null=True, symmetrical=False)
+    following = models.ManyToManyField('self', symmetrical=False)
 
     def followers(self):
         return Profile.objects.filter(following__user__username=self.user.username)
@@ -28,4 +28,3 @@ def create_user(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user(sender, instance, **kwargs):
     instance.profile.save()
-

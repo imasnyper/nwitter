@@ -1,10 +1,18 @@
 import { useQuery } from '@apollo/client';
-import React, { useEffect, useState } from 'react';
-import { ALL_FOLLOWED_TWEETS_AND_RETWEETS } from '../gql/tweets';
+import React, { useEffect, useState, useRef } from 'react';
+import { ALL_FOLLOWED_TWEETS } from '../gql/tweets';
 import TweetsAndRetweets from './tweetsAndRetweets';
+import { useTraceUpdate } from '../lib/helperFunctions'
+
 
 export default function FollowedTweets(props) {
-    const { data, loading, error, refetch, fetchMore } = useQuery(ALL_FOLLOWED_TWEETS_AND_RETWEETS)
+    // useTraceUpdate(props)
+    const { data, loading, error, refetch, fetchMore } = useQuery(
+        ALL_FOLLOWED_TWEETS,
+        {
+            // pollInterval: 1000 * 2,
+        }    
+    )
     const [after, setAfter] = useState(0);
 
     const isBottom = el => {
@@ -21,28 +29,29 @@ export default function FollowedTweets(props) {
     }
 
     const loadMore = () => {
+        console.log("load more called")
         fetchMore({
             variables: {
-                after: after + 10
+                after: after + 5
             },
             // TODO: implement https://github.com/apollographql/apollo-client/issues/6502
             updateQuery: (prev, {fetchMoreResult}) => {
-                if (!fetchMoreResult || (fetchMoreResult.allFollowedTweets.length == 0 && fetchMoreResult.allFollowedRetweets.length == 0)) {
+                if (!fetchMoreResult || (fetchMoreResult.allFollowedTweets.length === 0)) {
                     return prev;
                 }
-                if (!prev.allFollowedTweets || !prev.allFollowedRetweets) {
+                if (!prev.allFollowedTweets) {
                     return
                 }
-                setAfter(after + 10)
+                setAfter(after + 5)
                 return Object.assign({}, prev, {
                     allFollowedTweets: [...prev.allFollowedTweets, ...fetchMoreResult.allFollowedTweets],
-                    allFollowedRetweets: [...prev.allFollowedRetweets, ...fetchMoreResult.allFollowedRetweets]
                 });
             }
         })
     }
     
     useEffect(() => {
+        console.log("because of resendQuery")
         if(props.resendQuery) {
             refetch()
             props.setResendQuery(false)
@@ -55,10 +64,11 @@ export default function FollowedTweets(props) {
     })
 
     if(loading) return <p>Loading... <span role="img" aria-label="hourglass">⌛</span></p>
-    if(error) return <p>Error <span role="img" aria-label="crying">😭</span></p>
+    if(error) {console.log(error); return <p>Error <span role="img" aria-label="crying">😭</span></p>}
 
     const tweets = data.allFollowedTweets
-    const retweets = data.allFollowedRetweets
+    // const retweets = data.allFollowedRetweets
+    console.log(tweets)
 
-    return <TweetsAndRetweets tweets={tweets} retweets={retweets} setResendQuery={props.setResendQuery} />
+    return <TweetsAndRetweets tweets={tweets} setResendQuery={props.setResendQuery} />
 }

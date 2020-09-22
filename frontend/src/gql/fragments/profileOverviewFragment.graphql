@@ -1,6 +1,7 @@
 fragment ProfileOverviewFragment on ProfileType {
   id 
   user {
+    username
     id
   }
   following {

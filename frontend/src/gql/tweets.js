@@ -2,7 +2,6 @@ import { gql } from '@apollo/client'
 import { loader } from 'graphql.macro'
 
 // const profileDetailFragment = loader('./fragments/profileDetailFragment.graphql')
-const likeFragment = loader('./fragments/likeFragment.graphql')
 const retweetDetailFragment = loader('./fragments/retweetDetailFragment.graphql')
 const tweetDetailFragment = loader('./fragments/tweetDetailFragment.graphql')
 
@@ -16,8 +15,8 @@ ${tweetDetailFragment}
 `
 
 export const ALL_FOLLOWED_TWEETS = gql`
-query AllFollowedTweets {
-  allFollowedTweets {
+query AllFollowedTweets($first: Int, $after: Int) {
+  allFollowedTweets(first: $first, after: $after) {
     ...TweetDetailFragment 
   } 
 }

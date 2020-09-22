@@ -1,23 +1,29 @@
-#import "./ProfileDetailFragment.graphql"
+#import "./ProfileOverviewFragment.graphql"
 #import "./LikeFragment.graphql"
 
 fragment TweetDetailFragment on TweetType {
   id
   text
   profile {
-    ...ProfileDetailFragment
+    ...ProfileOverviewFragment
   }
   likes {
     ...LikeFragment
   }
-  retweets {
+  retweet {
     id
+    text
     profile {
-      user {
-        id
-      }
+      ...ProfileOverviewFragment
     }
+    likes {
+      ...LikeFragment
+    }
+    retweets
+    created
+    updated
   }
+  retweets
   created
   updated
 }

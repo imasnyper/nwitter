@@ -1,17 +1,17 @@
-#import "./ProfileDetailFragment.graphql"
+#import "./ProfileOverviewFragment.graphql"
 #import "./LikeFragment.graphql"
 
 fragment RetweetDetailFragment on RetweetType {
   id
   text
   profile {
-    ...ProfileDetailFragment
+    ...ProfileOverviewFragment
   }
   tweet {
     id
     text
     profile {
-      ...ProfileDetailFragment
+      ...ProfileOverviewFragment
     }
     likes {
       ...LikeFragment
