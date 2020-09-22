@@ -1,4 +1,10 @@
+TODO: learn docker
+TODO: learn websockets
+TODO: learn channels
+TODO: learn subscriptions
+TODO: apply all and add subscriptions to nwitter
 TODO: fix refreshToken auto refresh on frontend
+TODO: error message on login screen on unsucsessful login
 TODO: add reply tweet type
 TODO: add reply tweet mutation
 TODO: add reply to tweet button on each tweet

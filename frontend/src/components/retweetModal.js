@@ -12,8 +12,8 @@ export default function RetweetModal(props) {
     const [ retweetTweet, {error} ] = useMutation(RETWEET_TWEET_MUTATION, {onError: () => {console.log(error)}})
     const input = useRef(null)
 
-    const handleSubmit = e => {
-        e.preventDefault()
+    const handleSubmit = () => {
+        console.log("handling submit")
         retweetTweet({variables: {id: tweet.id, text: input.current.value}})
         props.setShowModal(false)
         props.setResendQuery(true)
@@ -36,7 +36,7 @@ export default function RetweetModal(props) {
                         <Form.Control ref={input} type="text" />
                     </Col>
                     <Col xs={4}>
-                        <Button xs={12} variant="primary" type="submit">
+                        <Button xs={12} variant="primary" onClick={handleSubmit}>
                             Retweet <span role="img" aria-label="bird">🐦</span>
                         </Button>
                     </Col>

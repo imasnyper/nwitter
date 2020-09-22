@@ -1,61 +1,67 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 import usePersistentState from './lib/persistentState';
 import refreshAuthToken from './lib/refreshAuthToken';
-import { afterFirstPagination } from './lib/afterFirstPagination';
-import FourZeroFour from './pages/fourZeroFour';
-import HomePage from './pages/homePage';
-import Login from './pages/login';
-import Profile from './pages/profile';
-import Signup from './pages/signup';
-import TweetPage from './pages/tweetPage';
-import RetweetPage from './pages/retweetPage';
-
+import { useTraceUpdate } from './lib/helperFunctions'
+import RoutingComponent from './components/routingComponent'
 
 function App() {
-  const [{username, authToken, refreshToken, tokenExpiryTime}, setRefreshTokenObject] = usePersistentState("refreshTokenObject", {
-    username: "",
-    authToken: "",
-    refreshToken: "",
-    tokenExpiryTime: 999
+  // useTraceUpdate()
+  const [refreshTokenObject, setRefreshTokenObject] = usePersistentState("refreshTokenObject", {
+      username: "",
+      authToken: "",
+      refreshToken: "",
+      tokenExpiryTime: 999
   })
 
   const [resendQuery, setResendQuery] = useState(false)
 
-  const expiryTimeObject = moment.unix(tokenExpiryTime).utc()
-  // TODO: figure out why difference evalutates to 0 sometimes.
-  const difference = moment.duration(expiryTimeObject.unix() - moment.utc().unix(), 'seconds')
-  console.log(difference.minutes())
+  const currentUnixTime = moment.utc().unix();
+  const unixDiff = refreshTokenObject.tokenExpiryTime - currentUnixTime
+  const difference = moment.duration(unixDiff, 'seconds')
+  console.log(difference.asMinutes())
 
   useEffect(() => {
     const handleRefresh = async () => {
       console.log("handle refresh called")
       const data = await refreshAuthToken(
-        username, 
-        refreshToken, 
+        refreshTokenObject.username, 
+        refreshTokenObject.refreshToken, 
       )
       const {token, refresh_token, tokenExpiryTime} = await data;
       setRefreshTokenObject({
-        username: username,
+        username: refreshTokenObject.username,
         authToken: token,
         refreshToken: refresh_token,
         tokenExpiryTime: tokenExpiryTime,
       })
     }
 
-    const timeoutTime = (difference.minutes() - 5) * 60 * 1000
-    // const timer = setTimeout(() => handleRefresh(), timeoutTime)
+    const timeoutTime = (difference.asMinutes() - 5) * 60 * 1000
+    let timer;
+    if (timeoutTime > 1) {
+      timer = setTimeout(() => handleRefresh(), timeoutTime)
+    } 
+    if (timeoutTime < 0) {
+      handleRefresh()
+    }
 
-    // return () => clearTimeout(timer);
-  }, [difference, refreshToken, setRefreshTokenObject, tokenExpiryTime, username])
+    return () => clearTimeout(timer);
+  }, 
+  [
+    difference, 
+    refreshTokenObject.refreshToken, 
+    setRefreshTokenObject, 
+    refreshTokenObject.tokenExpiryTime, 
+    refreshTokenObject.username
+  ])
 
   const client = new ApolloClient({
     uri: "http://localhost:8000/graphql/",
     headers: {
-        authorization: `Token ${authToken}`
+        authorization: `Token ${refreshTokenObject.authToken}`
     },
     cache: new InMemoryCache(),
   })
@@ -69,85 +75,16 @@ function App() {
     })
   }
 
-
-  const handleTime = () => {
-      const newExpiryTime = moment.utc().unix() + (3*60)
-      setRefreshTokenObject({
-          authToken: authToken,
-          username: username,
-          tokenExpiryTime: newExpiryTime,
-          refreshToken: refreshToken
-      })
-  }
-
-
   return (
     <ApolloProvider client={client}>
-      <Router>
-        <Switch>
-          <Route exact path="/">
-            {authToken === ""           ? 
-              <Redirect to="/login" />  : 
-              <HomePage 
-                username={username} 
-                authToken={authToken} 
-                handleLogout={handleLogout} 
-                handleTime={handleTime}
-                resendQuery={resendQuery}
-                setResendQuery={setResendQuery}
-              />
-            }
-          </Route>
-          <Route path="/profiles/:username">
-            {authToken === ""           ?
-              <Redirect to="/login" />  :
-              <Profile 
-                username={username}
-                handleLogout={handleLogout}
-                handleTime={handleTime}
-                resendQuery={resendQuery}
-                setResendQuery={setResendQuery}
-              />
-            }
-          </Route>
-          <Route path="/tweet/:id">
-            {authToken === ""           ?
-              <Redirect to="/login" />    :
-              <TweetPage 
-                username={username}
-                handleLogout={handleLogout}
-                handleTime={handleTime}
-                resendQuery={resendQuery}
-                setResendQuery={setResendQuery}
-              />
-            }
-          </Route>
-          <Route path="/retweet/:id">
-            {authToken === ""           ?
-              <Redirect to="/login" />    :
-              <RetweetPage 
-                username={username}
-                handleLogout={handleLogout}
-                handleTime={handleTime}
-                resendQuery={resendQuery}
-                setResendQuery={setResendQuery}
-              />
-            }
-          </Route>
-          <Route path="/login">
-            <Login 
-              setRefreshTokenObject={setRefreshTokenObject}
-              username={username}
-            />
-          </Route>
-          <Route path="/signup">
-            <Signup authToken={authToken} setRefreshTokenObject={setRefreshTokenObject}/>
-          </Route>
-          <Route path="*">
-            <FourZeroFour />
-          </Route>
-        </Switch>
-      </Router>
+      <RoutingComponent 
+        username={refreshTokenObject.username} 
+        authToken={refreshTokenObject.authToken} 
+        handleLogout={handleLogout} 
+        resendQuery={resendQuery}
+        setResendQuery={setResendQuery}
+        setRefreshTokenObject={setRefreshTokenObject}
+      />
     </ApolloProvider>
   );
 }

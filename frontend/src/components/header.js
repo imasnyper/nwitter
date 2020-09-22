@@ -18,7 +18,6 @@ export default function Header(props) {
                         <NavDropdown title={`Welcome ${props.headerInfo.username}`} id="nav-dropdown">
                             <NavDropdown.Item><Link to={`/profiles/${props.headerInfo.username}`}>Profile</Link></NavDropdown.Item>
                             <NavDropdown.Item onClick={props.headerInfo.handleLogout}>Logout</NavDropdown.Item>
-                            <NavDropdown.Item onClick={props.headerInfo.handleTime}>Refresh Token</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
                 </Col>
