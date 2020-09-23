@@ -1,12 +1,15 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import ToggleButton from 'react-bootstrap/ToggleButton';
 import Row from 'react-bootstrap/Row';
-import FollowedTweets from '../components/followedTweets';
+import Tweets from '../components/tweets';
 import Header from '../components/header';
 
 export default function HomePage(props) {
     const containerRef = useRef(null);
+    const [followedTweetsOnly, setFollowedTweetsOnly] = useState(true)
     
     const headerInfo = {
         resendQuery: props.resendQuery, 
@@ -24,8 +27,27 @@ export default function HomePage(props) {
                 </Col>
             </Row>
             <Row>
+                <Col>
+                    <ButtonGroup toggle>
+                        <ToggleButton 
+                            type="checkbox"
+                            value="1"
+                            checked={followedTweetsOnly}
+                            onChange={e => setFollowedTweetsOnly(e.currentTarget.checked)}
+                        >
+                            {followedTweetsOnly ? `View All Tweets` : `View Followed Tweets`}
+                        </ToggleButton>
+                    </ButtonGroup>
+                </Col>
+            </Row>
+            <Row>
                 <Col xs={12}>
-                    <FollowedTweets containerRef={containerRef} resendQuery={props.resendQuery} setResendQuery={props.setResendQuery}/>
+                    <Tweets 
+                        containerRef={containerRef} 
+                        resendQuery={props.resendQuery} 
+                        setResendQuery={props.setResendQuery}
+                        followedTweetsOnly={followedTweetsOnly}
+                    />
                 </Col>
             </Row>
         </Container>

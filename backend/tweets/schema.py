@@ -106,14 +106,14 @@ class TweetMutation(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    all_tweets = graphene.List(TweetType)
+    all_tweets = graphene.List(TweetType, first=graphene.Int(), after=graphene.Int())
     profile_tweets = graphene.List(TweetType, profile=graphene.String(required=True), first=graphene.Int(), after=graphene.Int())
     get_tweet = graphene.Field(TweetType, id=graphene.Int(required=True))
     all_followed_tweets = graphene.List(TweetType, first=graphene.Int(), after=graphene.Int())
 
 
-    def resolve_all_tweets(root, info):
-        return Tweet.objects.all().order_by("-created")
+    def resolve_all_tweets(root, info, first=5, after=0):
+        return Tweet.objects.all().order_by("-created")[after:after+first]
 
     def resolve_profile_tweets(root, info, profile, first=5, after=0):
         try:

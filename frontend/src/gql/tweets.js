@@ -6,8 +6,8 @@ const retweetDetailFragment = loader('./fragments/retweetDetailFragment.graphql'
 const tweetDetailFragment = loader('./fragments/tweetDetailFragment.graphql')
 
 export const ALL_TWEETS = gql`
-query AllTweets {
-  allTweets { 
+query AllTweets($first: Int, $after: Int) {
+  allTweets(first: $first, after: $after) { 
     ...TweetDetailFragment
   }
 }
