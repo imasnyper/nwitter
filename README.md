@@ -5,29 +5,25 @@ A simple Twitter clone made with Python/Django/Graphql(graphene-django) on the b
 
 1. Press the following link to sign up: 
 
-![Registration Direction](https://ibb.co/wYpPq99 "Registration Direction")
+![Registration Direction](https://github.com/imasnyper/nwitter/blob/master/docs/installation%20images/login%20screen.png "Registration Direction")
 
 2. Enter your information to register for the site:
 
-![Empty Registration Page](https://ibb.co/DRwW6vg)
+![Empty Registration Page](https://github.com/imasnyper/nwitter/blob/master/docs/installation%20images/registration%20page.png)
 
-![Registration Page Filled In](https://ibb.co/TPRt9fS)
+![Registration Page Filled In](https://github.com/imasnyper/nwitter/blob/master/docs/installation%20images/registration%20filled%20in.png)
 
-3. Enter your tweet!: 
+3. Enter your tweet and press Tweet! 🐦: 
 
-![Empty Home Page](https://ibb.co/L0RXjYx)
+![Empty Home Page](https://github.com/imasnyper/nwitter/blob/master/docs/installation%20images/empty%20home%20page.png)
 
-![First Tweet](https://ibb.co/XkZQCXb)
+![First Tweet](https://github.com/imasnyper/nwitter/blob/master/docs/installation%20images/First%20tweet.png)
 
-4. Press tweet to submit it to the site:
+4. Like/Retweet a tweet:
 
-![Submit Tweet](https://ibb.co/sKR75BV)
+![Tweet on Homepage](https://github.com/imasnyper/nwitter/blob/master/docs/installation%20images/tweet%20on%20home%20page.png)
 
-5. Like/Retweet a tweet:
-
-![Like Tweet](https://ibb.co/9ctR7D6)
-
-![Like Tweet](https://ibb.co/nCp64Xd)
+![Like/Retweet Tweet](https://github.com/imasnyper/nwitter/blob/master/docs/installation%20images/tweet%20on%20home%20page%20annotated.png)
 
 ## Running Local Prerequisites
 ___
