@@ -10,6 +10,7 @@ import { LIKE_TWEET_MUTATION } from '../gql/tweets';
 import ErrorToast from './errorToast';
 import RetweetModal from './retweetModal';
 import { useHistory } from 'react-router-dom';
+import TweetsAndRetweets from './tweetsAndRetweets';
 
 export default function Tweet(props) {
     const { tweet, setResendQuery } = props
@@ -43,6 +44,11 @@ export default function Tweet(props) {
                 style={{cursor: "pointer"}}
             >
                 <Card.Body>
+                    {tweet.isReply                      ? 
+                        <Card.Text>in response to <Link onClick={e => e.stopPropagation()} to={`/tweet/${tweet.replyTo.id}`}>{tweet.replyTo.profile.user.username}</Link></Card.Text>
+                                                        :
+                        <></>
+                    }
                     <Card.Title>
                         <span>
                             <Link 
@@ -72,6 +78,11 @@ export default function Tweet(props) {
                     </span>
                 </Card.Body>
             </Card>
+            {tweet.replies && tweet.replies.length > 0  && 
+                <div style={{paddingLeft: "3rem", paddingTop: "1rem"}}>
+                    <TweetsAndRetweets tweets={tweet.replies} setResendQuery={props.setResendQuery} />
+                </div>                                     
+            }
             <RetweetModal show={showModal} onHide={() => setShowModal(false)} tweet={tweet} setShowModal={setShowModal} setResendQuery={props.setResendQuery}/>
         </>
     )

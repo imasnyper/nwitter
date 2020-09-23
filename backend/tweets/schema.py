@@ -23,6 +23,9 @@ class TweetType(DjangoObjectType):
     likes = graphene.List(LikeType)
     retweet = graphene.Field(lambda: TweetType)
     retweets = graphene.Int()
+    replies = graphene.List(lambda: TweetType)
+    is_reply = graphene.Boolean()
+    reply_to = graphene.Field(lambda: TweetType)
 
     class Meta:
         model = Tweet
@@ -39,6 +42,18 @@ class TweetType(DjangoObjectType):
     def resolve_retweets(self, info):
         retweets = Tweet.objects.get(id=self.id).retweets.all().count()
         return retweets
+
+    def resolve_replies(self, info):
+        replies = Tweet.objects.get(id=self.id).replies.all()
+        return replies
+
+    def resolve_is_reply(self, info):
+        tweet = Tweet.objects.get(id=self.id)
+        return tweet.is_reply()
+
+    def resolve_reply_to(self, info):
+        tweet = Tweet.objects.get(id=self.id)
+        return tweet.reply_to
 
 
 class TweetSubscription(channels_graphql_ws.Subscription):
@@ -110,7 +125,6 @@ class Query(graphene.ObjectType):
     profile_tweets = graphene.List(TweetType, profile=graphene.String(required=True), first=graphene.Int(), after=graphene.Int())
     get_tweet = graphene.Field(TweetType, id=graphene.Int(required=True))
     all_followed_tweets = graphene.List(TweetType, first=graphene.Int(), after=graphene.Int())
-
 
     def resolve_all_tweets(root, info, first=5, after=0):
         return Tweet.objects.all().order_by("-created")[after:after+first]

@@ -34,7 +34,8 @@ export default function TweetPage(props) {
             </Row>
             <Row>
                 <Col xs={12}>
-                    <Tweet setResendQuery={props.setResendQuery} tweet={tweet} />
+                    {tweet.replyTo && <Tweet setResendQuery={props.setResendQuery} tweet={tweet.replyTo} />}
+                    <div style={{paddingLeft: tweet.replyTo ? "3rem" : "0", paddingTop: tweet.replyTo ? "1rem" : "0"}}><Tweet setResendQuery={props.setResendQuery} tweet={tweet} /></div>
                 </Col>
             </Row>
         </Container>

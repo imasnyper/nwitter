@@ -4,10 +4,14 @@ from profiles.models import Profile
 
 class Tweet(models.Model):
     retweet = models.ForeignKey('self', null=True, on_delete=models.CASCADE, related_name="retweets")
+    reply_to = models.ForeignKey('self', null=True, on_delete=models.CASCADE, related_name="replies")
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     text = models.CharField(max_length=280)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    def is_reply(self):
+        return self.reply_to != None
 
     def likes(self):
         if isinstance(self, Tweet):

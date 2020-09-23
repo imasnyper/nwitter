@@ -24,6 +24,33 @@ fragment TweetDetailFragment on TweetType {
     updated
   }
   retweets
+  replies {
+    id
+    text
+    profile {
+      ...ProfileOverviewFragment
+    }
+    likes {
+      ...LikeFragment
+    }
+    retweets
+    created
+    updated
+  }
   created
   updated
+  isReply
+  replyTo {
+    id
+    text
+    profile {
+      ...ProfileOverviewFragment
+    }
+    likes {
+      ...LikeFragment
+    }
+    retweets
+    created
+    updated
+  }
 }
