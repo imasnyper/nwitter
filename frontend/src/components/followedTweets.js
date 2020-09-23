@@ -67,8 +67,6 @@ export default function FollowedTweets(props) {
     if(error) {console.log(error); return <p>Error <span role="img" aria-label="crying">😭</span></p>}
 
     const tweets = data.allFollowedTweets
-    // const retweets = data.allFollowedRetweets
-    console.log(tweets)
 
     return <TweetsAndRetweets tweets={tweets} setResendQuery={props.setResendQuery} />
 }

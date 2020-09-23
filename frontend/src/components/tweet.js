@@ -17,8 +17,6 @@ export default function Tweet(props) {
     const [showModal, setShowModal] = useState(false);
     const history = useHistory();
 
-    console.log(tweet)
-
     const [ likeTweet, {error: tweetError} ] = useMutation(LIKE_TWEET_MUTATION, {onError: () => {setshowError(true)}})
     
     const handleLike = e => {
