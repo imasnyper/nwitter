@@ -14,7 +14,8 @@ export default function RetweetModal(props) {
     )
     const input = useRef(null)
 
-    const handleSubmit = () => {
+    const handleSubmit = e => {
+        e.preventDefault()
         console.log("handling submit")
         retweetTweet({variables: {id: tweet.id, text: input.current.value}})
         props.setShowModal(false)
@@ -33,16 +34,18 @@ export default function RetweetModal(props) {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body xs={12}>
-                <Form.Group as={Row} onSubmit={e => handleSubmit(e)}>
-                    <Col xs={8}>
-                        <Form.Control ref={input} type="text" />
-                    </Col>
-                    <Col xs={4}>
-                        <Button xs={12} variant="primary" onClick={handleSubmit}>
-                            Retweet <span role="img" aria-label="bird">🐦</span>
-                        </Button>
-                    </Col>
-                </Form.Group>
+                <Form onSubmit={e => handleSubmit(e)}>
+                    <Form.Group as={Row}>
+                        <Col xs={8}>
+                            <Form.Control ref={input} type="text" />
+                        </Col>
+                        <Col xs={4}>
+                            <Button xs={12} variant="primary" type="submit">
+                                Retweet <span role="img" aria-label="bird">🐦</span>
+                            </Button>
+                        </Col>
+                    </Form.Group>
+                </Form>
             </Modal.Body>
         </Modal>
     )

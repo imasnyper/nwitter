@@ -26,7 +26,6 @@ export default function Tweet(props) {
 
     const handleTweetClick = e => {
         e.stopPropagation();
-        let linkString;
         history.push(`/tweet/${tweet.id}`);
     }
 
@@ -60,7 +59,7 @@ export default function Tweet(props) {
                     <Card.Text>
                         {tweet.text}
                     </Card.Text>
-                    {tweet.retweet ? <><Tweet tweet={tweet.retweet} /> <br /></>:<></>}
+                    {tweet.retweet ? <><Tweet tweet={tweet.retweet} setResendQuery={props.setResendQuery} /> <br /></>:<></>}
                     <span onClick={e => handleLike(e) } style={{paddingRight: ".5rem", zIndex: "999"}}>
                         <Button style={{zIndex: "99999"}} >
                             ❤ <Badge variant="light">{tweet.likes.length}</Badge>
