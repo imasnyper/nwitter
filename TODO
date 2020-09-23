@@ -3,7 +3,7 @@ TODO: learn websockets
 TODO: learn channels
 TODO: learn subscriptions
 TODO: apply all and add subscriptions to nwitter
-TODO: fix refreshToken auto refresh on frontend
+TODO: fix refreshToken auto refresh on frontend - this should be done
 TODO: error message on login screen on unsucsessful login
 TODO: add reply tweet type
 TODO: add reply tweet mutation
