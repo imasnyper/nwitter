@@ -57,7 +57,7 @@ export default function Signup(props) {
             })
     }
 
-    if(authToken !== "") return <Redirect to="/" />
+    if(authToken && authToken !== "") return <Redirect to="/" />
 
     return (
         <Container fluid>

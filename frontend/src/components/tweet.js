@@ -60,7 +60,7 @@ export default function Tweet(props) {
                         {tweet.text}
                     </Card.Text>
                     {tweet.retweet ? <><Tweet tweet={tweet.retweet} setResendQuery={props.setResendQuery} /> <br /></>:<></>}
-                    <span onClick={e => handleLike(e) } style={{paddingRight: ".5rem", zIndex: "999"}}>
+                    <span onClick={e => handleLike(e)} style={{paddingRight: ".5rem", zIndex: "999"}}>
                         <Button style={{zIndex: "99999"}} >
                             ❤ <Badge variant="light">{tweet.likes.length}</Badge>
                         </Button>
