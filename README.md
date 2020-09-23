@@ -5,7 +5,7 @@ A simple Twitter clone made with Python/Django/Graphql(graphene-django) on the b
 
 1. Press the following link to sign up: 
 
-![Registration Direction](https://ibb.co/wYpPq99)
+![Registration Direction](https://ibb.co/wYpPq99 "Registration Direction")
 
 2. Enter your information to register for the site:
 
