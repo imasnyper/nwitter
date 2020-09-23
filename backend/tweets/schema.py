@@ -19,21 +19,6 @@ class LikeType(DjangoObjectType):
         fields = "__all__"
 
 
-# class RetweetType(DjangoObjectType):
-#     likes = graphene.List(LikeType)
-#     retweets = graphene.List(lambda: RetweetType)
-
-#     class Meta:
-#         model = Retweet
-#         fields = "__all__"
-
-#     def resolve_likes(self, info):
-#         return self.likes()
-
-#     def resolve_retweets(self, info):
-#         return self.retweets()
-
-
 class TweetType(DjangoObjectType):
     likes = graphene.List(LikeType)
     retweet = graphene.Field(lambda: TweetType)
@@ -54,19 +39,6 @@ class TweetType(DjangoObjectType):
     def resolve_retweets(self, info):
         retweets = Tweet.objects.get(id=self.id).retweets.all().count()
         return retweets
-
-
-# class TweetRetweetUnion(graphene.Union):
-#     class Meta:
-#         types = (TweetType, RetweetType)
-
-#     @classmethod
-#     def resolve_type(cls, instance, info):
-#         if isinstance(instance, Tweet):
-#             return TweetType
-#         if isinstance(instance, Retweet):
-#             return RetweetType
-#         return TweetRetweetUnion.resolve_type(instance, info)
 
 
 class TweetSubscription(channels_graphql_ws.Subscription):
@@ -136,23 +108,8 @@ class TweetMutation(graphene.Mutation):
 class Query(graphene.ObjectType):
     all_tweets = graphene.List(TweetType)
     profile_tweets = graphene.List(TweetType, profile=graphene.String(required=True), first=graphene.Int(), after=graphene.Int())
-    # profile_retweets = graphene.List(RetweetType, profile=graphene.String(required=True), first=graphene.Int(), after=graphene.Int())
     get_tweet = graphene.Field(TweetType, id=graphene.Int(required=True))
-    # get_retweet = graphene.Field(RetweetType, id=graphene.Int(required=True))
-    
     all_followed_tweets = graphene.List(TweetType, first=graphene.Int(), after=graphene.Int())
-    
-    # all_followed_retweets = graphene.List(RetweetType, first=graphene.Int(), after=graphene.Int())
-    # tweets_and_retweets = graphene.List(TweetRetweetUnion, first=graphene.Int(), after=graphene.Int())
-
-    # def resolve_tweets_and_retweets(self, info, first=5, after=0):
-    #     if not info.context.user.is_authenticated:
-    #         return None
-    #     profile = Profile.objects.get(user__username=info.context.user.username)
-    #     following = profile.following.all()
-    #     tweets = Tweet.objects.filter(Q(profile=profile) | Q(profile__in=following))[after:after+first]
-    #     retweets = Retweet.objects.filter(Q(profile=profile) | Q(profile__in=following))[after:after+first]
-    #     tweets_and_retweets = sorted(chain(tweets, retweets), key=attrgetter(created))
 
 
     def resolve_all_tweets(root, info):
@@ -164,12 +121,6 @@ class Query(graphene.ObjectType):
         except Tweet.DoesNotExist:
             return None
 
-    # def resolve_profile_retweets(root, info, profile, first=5, after=0):
-    #     try:
-    #         return Retweet.objects.filter(profile__user__username=profile).order_by("-created")[after:after+first]
-    #     except Retweet.DoesNotExist:
-    #         return None
-
     def resolve_all_followed_tweets(root, info, first=5, after=0):
         if not info.context.user.is_authenticated:
             return None
@@ -180,25 +131,10 @@ class Query(graphene.ObjectType):
         except Tweet.DoesNotExist:
             return None
 
-    # def resolve_all_followed_retweets(root, info, first=5, after=0):
-    #     if not info.context.user.is_authenticated:
-    #         return None
-    #     try:
-    #         profile = Profile.objects.get(user__username=info.context.user.username)
-    #         following = profile.following.all()
-    #         return Retweet.objects.filter(Q(profile=profile) | Q(profile__in=following)).order_by("-created")[after:after+first]
-    #     except Retweet.DoesNotExist:
-    #         return None
-
     def resolve_get_tweet(root, info, id):
         tweet = Tweet.objects.get(id=id)
 
         return tweet
-
-    # def resolve_get_retweet(root, info, id):
-    #     retweet = Retweet.objects.get(id=id)
-
-    #     return retweet
 
 
 class Mutation(graphene.ObjectType):

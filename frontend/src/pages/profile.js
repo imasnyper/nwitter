@@ -73,7 +73,6 @@ export default function Profile(props) {
     if(profileError || tweetError || userProfileError) return <p>Error <span role="img" aria-label="crying">😭</span></p>
 
     const profileTweets = data.profileTweets
-    const profileRetweets = data.profileRetweets
     const profile = profileData.profile
     const userProfile = userProfileData.profile
 
@@ -129,7 +128,7 @@ export default function Profile(props) {
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            <TweetsAndRetweets setResendQuery={props.setResendQuery} tweets={profileTweets} retweets={profileRetweets}/>
+                            <TweetsAndRetweets setResendQuery={props.setResendQuery} tweets={profileTweets}/>
                         </Col>
                     </Row>
                 </Route>

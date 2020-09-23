@@ -5,7 +5,6 @@ import Login from '../pages/login';
 import Profile from '../pages/profile';
 import Signup from '../pages/signup';
 import TweetPage from '../pages/tweetPage';
-import RetweetPage from '../pages/retweetPage';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 
 export default function RoutingComponent(props) {
@@ -39,17 +38,6 @@ export default function RoutingComponent(props) {
                     {props.authToken === ""         ?
                         <Redirect to="/login" />    :
                         <TweetPage 
-                            username={props.username}
-                            handleLogout={props.handleLogout}
-                            resendQuery={props.resendQuery}
-                            setResendQuery={props.setResendQuery}
-                        />
-                    }
-                </Route>
-                <Route path="/retweet/:id">
-                    {props.authToken === ""         ?
-                        <Redirect to="/login" />    :
-                        <RetweetPage 
                             username={props.username}
                             handleLogout={props.handleLogout}
                             resendQuery={props.resendQuery}

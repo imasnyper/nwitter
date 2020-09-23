@@ -28,25 +28,8 @@ query ProfileTweets($profile: String!, $first: Int, $after: Int) {
   profileTweets(profile: $profile, first: $first, after: $after) {
     ...TweetDetailFragment
   }
-  profileRetweets(profile: $profile, first: $first, after: $after) {
-    ...RetweetDetailFragment
-  }
 }
 ${tweetDetailFragment}
-${retweetDetailFragment}
-`
-
-export const ALL_FOLLOWED_TWEETS_AND_RETWEETS = gql`
-query AllFollowedTweetsAndRetweets($first: Int, $after: Int) {
-  allFollowedTweets(first: $first, after: $after) {
-    ...TweetDetailFragment
-  }
-  allFollowedRetweets(first: $first, after: $after) {
-    ...RetweetDetailFragment
-  }
-}
-${tweetDetailFragment}
-${retweetDetailFragment}
 `
 
 export const GET_TWEET = gql`
@@ -56,15 +39,6 @@ query getTweet($id: Int!) {
   }
 }
 ${tweetDetailFragment}
-`
-
-export const GET_RETWEET = gql`
-query getRetweet($id: Int!) {
-  getRetweet(id: $id) {
-    ...RetweetDetailFragment
-  }
-}
-${retweetDetailFragment}
 `
 
 export const COMPOSE_TWEET_MUTATION = gql`
