@@ -9,7 +9,9 @@ import { RETWEET_TWEET_MUTATION } from '../gql/tweets';
 
 export default function RetweetModal(props) {
     const { tweet } =  props;
-    const [ retweetTweet, {error} ] = useMutation(RETWEET_TWEET_MUTATION, {onError: () => {console.log(error)}})
+    const [ retweetTweet, {error} ] = useMutation(RETWEET_TWEET_MUTATION, 
+        {onError: () => {console.log(error)}}
+    )
     const input = useRef(null)
 
     const handleSubmit = () => {

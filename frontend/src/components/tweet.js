@@ -17,33 +17,60 @@ export default function Tweet(props) {
     const [showModal, setShowModal] = useState(false);
     const history = useHistory();
 
+    console.log(tweet)
+
     const [ likeTweet, {error: tweetError} ] = useMutation(LIKE_TWEET_MUTATION, {onError: () => {setshowError(true)}})
     
-    const handleLike = () => {
+    const handleLike = e => {
         likeTweet({variables: {id: tweet.id}})
         setResendQuery(true);
+    }
+
+    const handleTweetClick = e => {
+        e.stopPropagation();
+        let linkString;
+        history.push(`/tweet/${tweet.id}`);
+    }
+
+    const handleRetweet = e => {
+        e.stopPropagation();
+        setShowModal(true);
     }
 
     return (
         <>
             <ErrorToast show={showError} setShow={setshowError} error={tweetError}/>
-            <Card onClick={e => {e.stopPropagation(); history.push(`/tweet/${tweet.id}`)}} className="tweet-card" style={{cursor: "pointer"}}>
+            <Card 
+                onClick={e => handleTweetClick(e)} 
+                className="tweet-card" 
+                style={{cursor: "pointer"}}
+            >
                 <Card.Body>
                     <Card.Title>
-                        <span><Link onClick={e => e.stopPropagation()} to={`/profiles/${tweet.profile.user.username}`}>{tweet.profile.user.username}</Link></span>
-                        <span style={{fontStyle: "normal", fontSize: ".75rem"}}>&nbsp;-&nbsp;tweeted {moment(tweet.created).fromNow()}</span>
+                        <span>
+                            <Link 
+                                onClick={e => e.stopPropagation()} 
+                                to={`/profiles/${tweet.profile.user.username}`}
+                            >
+                                {tweet.profile.user.username}
+                            </Link>
+                        </span>
+                        <span style={{fontStyle: "normal", fontSize: ".75rem"}}>
+                            &nbsp;-&nbsp;tweeted {moment(tweet.created).fromNow()}
+                        </span>
                     </Card.Title>
                     <Card.Text>
                         {tweet.text}
                     </Card.Text>
-                    <span onClick={e => { e.stopPropagation(); handleLike() }} style={{paddingRight: ".5rem", zIndex: "999"}}>
+                    {tweet.retweet ? <><Tweet tweet={tweet.retweet} /> <br /></>:<></>}
+                    <span onClick={e => handleLike(e) } style={{paddingRight: ".5rem", zIndex: "999"}}>
                         <Button style={{zIndex: "99999"}} >
                             ❤ <Badge variant="light">{tweet.likes.length}</Badge>
                         </Button>
                     </span>
-                    <span onClick={e => { e.stopPropagation(); setShowModal(true) }} style={{paddingRight: ".5rem", zIndex: "999"}}>
+                    <span onClick={e => handleRetweet(e)} style={{paddingRight: ".5rem", zIndex: "999"}}>
                         <Button style={{zIndex: "99999"}}>
-                            <ArrowRepeat size={22}/> <Badge variant="light">{tweet.retweets.length}</Badge>
+                            <ArrowRepeat size={22}/> <Badge variant="light">{tweet.retweets}</Badge>
                         </Button>
                     </span>
                 </Card.Body>

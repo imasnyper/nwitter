@@ -111,9 +111,9 @@ class TweetRetweetMutation(graphene.Mutation):
     def mutate(self, info, id, text=""):
         tweet = get_object_or_404(Tweet, id=id)
         profile = Profile.objects.get(user__username=info.context.user.username)
-        retweet = Retweet.objects.create(profile=profile, text=text, tweet=tweet)
+        retweet = Tweet.objects.create(profile=profile, text=text, retweet=tweet)
 
-        return TweetRetweetMutation(tweet=tweet)
+        return TweetRetweetMutation(tweet=retweet)
 
 
 class TweetMutation(graphene.Mutation):
