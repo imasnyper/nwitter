@@ -5,11 +5,10 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import { Pencil } from 'react-bootstrap-icons';
-import { useRouteMatch, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 
 export default function ProfileDetail(props) {
-    let { path, url } = useRouteMatch();
     const history = useHistory();
     const { 
         profile,                      
@@ -36,7 +35,7 @@ export default function ProfileDetail(props) {
                             Profile {profile.user.username}
                         </span>
                         <span>&nbsp;Has been a member for {createdTime.from(moment(), true)}</span>
-                        {userProfile.user.username == profile.user.username    ? 
+                        {userProfile.user.username === profile.user.username    ? 
                             <span className="float-right">
                                 <Button 
                                     onClick={() => setShowEditModal(true)} 

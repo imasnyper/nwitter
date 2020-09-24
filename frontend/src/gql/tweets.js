@@ -2,7 +2,6 @@ import { gql } from '@apollo/client'
 import { loader } from 'graphql.macro'
 
 // const profileDetailFragment = loader('./fragments/profileDetailFragment.graphql')
-const retweetDetailFragment = loader('./fragments/retweetDetailFragment.graphql')
 const tweetDetailFragment = loader('./fragments/tweetDetailFragment.graphql')
 
 export const ALL_TWEETS = gql`

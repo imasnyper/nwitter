@@ -1,10 +1,10 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import moment from 'moment';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import usePersistentState from './lib/persistentState';
 import refreshAuthToken from './lib/refreshAuthToken';
-import { useTraceUpdate } from './lib/helperFunctions'
+// import { useTraceUpdate } from './lib/helperFunctions'
 import RoutingComponent from './components/routingComponent'
 
 function App() {

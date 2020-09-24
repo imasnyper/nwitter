@@ -1,10 +1,9 @@
 import { useMutation, useQuery } from '@apollo/client';
-import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import { Route, Switch, useParams, useRouteMatch, useHistory } from 'react-router-dom';
+import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import ProfileList from './profileList';
 import Header from '../components/header';
 import { FOLLOW_PROFILE_MUTATION, PROFILE, PROFILE_DETAILED } from '../gql/profiles';
@@ -14,18 +13,17 @@ import '../styles/global.css';
 import EditProfileModal from '../components/editProfileModal';
 import ProfileDetail from '../components/profileDetail';
 
-const removeTrailingSlash = url => { 
-    if(url.length - 1 === url.lastIndexOf('/')) {
-        return url.substring(0, url.length - 1)
-    }
-    return url
-}
+// const removeTrailingSlash = url => { 
+//     if(url.length - 1 === url.lastIndexOf('/')) {
+//         return url.substring(0, url.length - 1)
+//     }
+//     return url
+// }
 
 export default function Profile(props) {
     const { username: viewedUsername } = useParams();
-    let { path, url } = useRouteMatch();
-    
-    url = removeTrailingSlash(url)
+    let { path } = useRouteMatch();
+
     const { data: userProfileData, loading: userProfileLoading, error: userProfileError } = useQuery(PROFILE, {variables: {profile: props.username}})
     const { data: profileData, loading: profileLoading, error: profileError } = useQuery(PROFILE_DETAILED, {variables: {profile: viewedUsername}})
     const { data, loading: tweetLoading, error: tweetError, fetchMore } = useQuery(PROFILE_TWEETS, {variables: {profile: viewedUsername}}) 
