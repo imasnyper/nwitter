@@ -2,6 +2,7 @@ import { gql } from '@apollo/client'
 import { loader } from 'graphql.macro'
 
 const profileDetailFragment = loader('./fragments/profileDetailFragment.graphql')
+const profileExtraDetailFragment = loader('./fragments/profileExtraDetailFragment.graphql')
 
 export const PROFILE = gql`
 query GetProfile($profile: String!) {
@@ -10,6 +11,15 @@ query GetProfile($profile: String!) {
   }
 }
 ${profileDetailFragment}
+`
+
+export const PROFILE_DETAILED = gql`
+query GetProfile($profile: String!) {
+  profile(profile: $profile) {
+    ...ProfileExtraDetailFragment
+  }
+}
+${profileExtraDetailFragment}
 `
 
 

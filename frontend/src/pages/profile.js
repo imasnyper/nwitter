@@ -1,21 +1,18 @@
 import { useMutation, useQuery } from '@apollo/client';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import { Pencil } from 'react-bootstrap-icons';
-import Badge from 'react-bootstrap/Badge';
-import { Link, Route, Switch, useParams, useRouteMatch, useHistory } from 'react-router-dom';
-import Followed from '../components/followed';
+import { Route, Switch, useParams, useRouteMatch, useHistory } from 'react-router-dom';
+import ProfileList from './profileList';
 import Header from '../components/header';
-import { FOLLOW_PROFILE_MUTATION, PROFILE } from '../gql/profiles';
+import { FOLLOW_PROFILE_MUTATION, PROFILE, PROFILE_DETAILED } from '../gql/profiles';
 import { PROFILE_TWEETS } from '../gql/tweets';
 import TweetList from '../components/tweetList';
 import '../styles/global.css';
 import EditProfileModal from '../components/editProfileModal';
+import ProfileDetail from '../components/profileDetail';
 
 const removeTrailingSlash = url => { 
     if(url.length - 1 === url.lastIndexOf('/')) {
@@ -27,10 +24,10 @@ const removeTrailingSlash = url => {
 export default function Profile(props) {
     const { username: viewedUsername } = useParams();
     let { path, url } = useRouteMatch();
-    const history = useHistory();
+    
     url = removeTrailingSlash(url)
     const { data: userProfileData, loading: userProfileLoading, error: userProfileError } = useQuery(PROFILE, {variables: {profile: props.username}})
-    const { data: profileData, loading: profileLoading, error: profileError } = useQuery(PROFILE, {variables: {profile: viewedUsername}})
+    const { data: profileData, loading: profileLoading, error: profileError } = useQuery(PROFILE_DETAILED, {variables: {profile: viewedUsername}})
     const { data, loading: tweetLoading, error: tweetError, fetchMore } = useQuery(PROFILE_TWEETS, {variables: {profile: viewedUsername}}) 
     const [ followProfile ] = useMutation(FOLLOW_PROFILE_MUTATION, {onError: () => {}})
     const [ showEditModal, setShowEditModal ] = useState(false);
@@ -85,7 +82,7 @@ export default function Profile(props) {
 
     console.log(profile)
 
-    const createdTime = moment(profile.created)
+    
 
     const headerInfo = {
         resendQuery: props.resendQuery, 
@@ -101,13 +98,7 @@ export default function Profile(props) {
         // profileRefetch()
     }
 
-    const checkNotFollowing = (userProfile, checkProfile) => {
-        const userFollowing = userProfile.following
-        const followedUsernames = userFollowing.map(profile => {
-            return profile.user.username
-        })
-        return !followedUsernames.includes(checkProfile)
-    }
+
 
     console.log(after)
 
@@ -122,70 +113,12 @@ export default function Profile(props) {
                     </Row>
                     <Row style={{paddingBottom: "1rem"}}>
                         <Col xs={12}>
-                            <Card>
-                                <Card.Body>
-                                    <Row>
-                                        <Col>
-                                            <span className="title">
-                                                Profile {profile.user.username}
-                                            </span>
-                                            <span>&nbsp;Has been a member for {createdTime.from(moment(), true)}</span>
-                                            {userProfile.user.username == viewedUsername    ? 
-                                                <span className="float-right">
-                                                    <Button 
-                                                        onClick={() => setShowEditModal(true)} 
-                                                        variant="warning"
-                                                    >
-                                                        Edit Profile <Pencil size={18} />
-                                                    </Button>
-                                                </span>                                     :
-                                                <></>
-                                            }
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <span className="bold-text">Location:&nbsp;</span><span>{profile.location}</span>
-                                            <span className="bold-text left-pad-sm">Website:&nbsp;</span><span>{profile.website}</span>
-                                            <span className="bold-text left-pad-sm">Birthday:&nbsp;</span><span>{profile.birthday}</span>
-                                        </Col>
-                                    </Row>
-                                    <Row className="top-pad-sm bot-pad-sm">
-                                        <Col>
-                                            <span>{profile.bio}</span>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <span>
-                                                <Button 
-                                                    variant="dark"
-                                                    onClick={() => {history.push(`${url}/followed`)}}
-                                                >
-                                                    <Badge variant="light">{profile.following.length}</Badge> following
-                                                </Button>
-                                            </span>
-                                            <span className="left-pad-sm">
-                                                <Button 
-                                                    variant="dark" 
-                                                    onClick={() => history.push(`${url}/followed`)}
-                                                >
-                                                    <Badge variant="light">{profile.followers.length}</Badge> followers
-                                                </Button>
-                                            </span>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            {
-                                                (userProfile.user.username !== viewedUsername && checkNotFollowing(userProfile, viewedUsername))    ? 
-                                                    <Button onClick={handleFollow}>Follow</Button>                                                  : 
-                                                    <></>
-                                            }
-                                        </Col>
-                                    </Row>
-                                </Card.Body>
-                            </Card>
+                            <ProfileDetail 
+                                profile={profile}
+                                userProfile={userProfile}
+                                setShowEditModal={setShowEditModal}
+                                handleFollow={handleFollow}
+                            />
                         </Col>
                     </Row>
                     <Row>
@@ -194,8 +127,25 @@ export default function Profile(props) {
                         </Col>
                     </Row>
                 </Route>
-                <Route path={`${path}/followed`}>
-                    <Followed headerInfo={headerInfo} following={profile.following} followers={profile.followers} />
+                <Route path={`${path}/following`}>
+                    <ProfileList 
+                        headerInfo={headerInfo} 
+                        followers={profile.following} 
+                        userProfile={userProfile}
+                        profile={profile}
+                        setShowEditModal={setShowEditModal}
+                        handleFollow={handleFollow}
+                    />
+                </Route>
+                <Route path={`${path}/followers`}>
+                    <ProfileList 
+                        headerInfo={headerInfo} 
+                        followers={profile.followers} 
+                        userProfile={userProfile}
+                        profile={profile}
+                        setShowEditModal={setShowEditModal}
+                        handleFollow={handleFollow}
+                    />
                 </Route>
             </Switch>
             <EditProfileModal 

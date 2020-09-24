@@ -1,0 +1,63 @@
+fragment ProfileExtraDetailFragment on ProfileType {
+  id 
+  user {
+    id
+    username
+  }
+  following {
+    id
+    user {
+      id
+      username
+    }
+    following {
+      user {
+        id
+        username
+      }
+    }
+    followers {
+      user {
+        id
+        username
+      }
+    }
+    created
+    updated
+    bio
+    location
+    website
+    birthday
+  }
+  followers {
+    id
+    user {
+      id
+      username
+    }
+    following {
+      user {
+        id
+        username
+      }
+    }
+    followers {
+      user {
+        id
+        username
+      }
+    }
+    created
+    updated
+    bio
+    location
+    website
+    birthday
+  }
+  created
+  updated
+  bio
+  location
+  website
+  birthday
+}

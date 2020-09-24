@@ -6,6 +6,7 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 import Row from 'react-bootstrap/Row';
 import Tweets from '../components/tweets';
 import Header from '../components/header';
+import "../styles/global.css";
 
 export default function HomePage(props) {
     const containerRef = useRef(null);
@@ -26,7 +27,7 @@ export default function HomePage(props) {
                     <Header headerInfo={headerInfo} />
                 </Col>
             </Row>
-            <Row>
+            <Row className="bot-pad-sm">
                 <Col>
                     <ButtonGroup toggle>
                         <ToggleButton 
