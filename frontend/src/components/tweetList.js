@@ -1,10 +1,9 @@
 import React from 'react';
 import Tweet from './tweet';
-import Retweet from './retweet';
 
-export default function TweetsAndRetweets(props) {
-    let { tweets } = props;
-
+export default function TweetList(props) {
+    const { tweets } = props
+    
     return (
         <>
             {tweets.map(item => {

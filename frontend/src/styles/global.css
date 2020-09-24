@@ -1,0 +1,52 @@
+.title {
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.bold-text {
+    font-weight: 600;
+}
+
+.left-pad-sm {
+    padding-left: 1rem;
+}
+
+.left-pad-lg {
+    padding-left: 3rem;
+}
+
+.top-pad-sm {
+    padding-top: 1rem;
+}
+
+.top-pad-lg {
+    padding-top: 3rem;
+}
+
+.bot-pad-sm {
+    padding-bottom: 1rem;
+}
+
+.bot-pad-lg {
+    padding-bottom: 3rem;
+}
+
+.top-marg-sm {
+    margin-top: 1rem;
+}
+
+.top-marg-lg {
+    margin-top: 3rem;
+}
+
+.bot-marg-sm {
+    margin-bottom: 1rem;
+}
+
+.bot-marg-lg {
+    margin-bottom: 3rem;
+}
+
+.float-right {
+    float: right;
+}

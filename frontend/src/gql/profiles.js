@@ -23,3 +23,14 @@ mutation FollowProfile($id: Int!) {
 }
 ${profileDetailFragment}
 `
+
+export const EDIT_PROFILE_MUTATION = gql`
+mutation EditProfile($bio: String, $location: String, $website: String, $birthday: Date) {
+  editProfile(bio: $bio, location: $location, website: $website, birthday: $birthday) {
+    profile {
+      ...ProfileDetailFragment
+    }
+  }
+}
+${profileDetailFragment}
+`

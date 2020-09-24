@@ -21,8 +21,8 @@ class ProfileType(DjangoObjectType):
     followers = graphene.List(lambda: ProfileType)
 
     def resolve_followers(self, info):
-        user = Profile.objects.get(user__username=self.user.username)
-        return user.followers()
+        profile = Profile.objects.get(user__username=self.user.username)
+        return profile.followers()
 
 
 class FollowProfileMutation(graphene.Mutation):
@@ -37,6 +37,84 @@ class FollowProfileMutation(graphene.Mutation):
         profile.following.add(profile_to_follow)
 
         return FollowProfileMutation(profile=profile)
+
+
+class EditBioMutation(graphene.Mutation):
+    class Arguments:
+        bio = graphene.String(required=True)
+    
+    profile = graphene.Field(ProfileType)
+
+    def mutate(self, info, bio):
+        profile = Profile.objects.get(user__username=info.context.user.username)
+        profile.bio = bio
+        profile.save()
+
+        return EditBioMutation(profile=profile)
+
+
+class EditLocationMutation(graphene.Mutation):
+    class Arguments:
+        location = graphene.String(required=True)
+    
+    profile = graphene.Field(ProfileType)
+
+    def mutate(self, info, location):
+        profile = Profile.objects.get(user__username=info.context.user.username)
+        profile.location = location
+        profile.save()
+
+        return EditLocationMutation(profile=profile)
+
+
+class EditWebsiteMutation(graphene.Mutation):
+    class Arguments:
+        website = graphene.String(required=True)
+    
+    profile = graphene.Field(ProfileType)
+
+    def mutate(self, info, website):
+        profile = Profile.objects.get(user__username=info.context.user.username)
+        profile.website = website
+        profile.save()
+
+        return EditWebsiteMutation(profile=profile)
+
+class EditBirthdayMutation(graphene.Mutation):
+    class Arguments:
+        birthday = graphene.Date(required=True)
+    
+    profile = graphene.Field(ProfileType)
+
+    def mutate(self, info, birthday):
+        profile = Profile.objects.get(user__username=info.context.user.username)
+        profile.birthday = birthday
+        profile.save()
+
+        return EditBirthdayMutation(profile=profile)
+
+class EditProfileMutation(graphene.Mutation):
+    class Arguments:
+        bio = graphene.String()
+        location = graphene.String()
+        website = graphene.String()
+        birthday = graphene.Date()
+
+    profile = graphene.Field(ProfileType)
+
+    def mutate(self, info, bio="", location="", website="", birthday=""):
+        profile = Profile.objects.get(user__username=info.context.user.username)
+        if bio:
+            profile.bio = bio
+        if location:
+            profile.location = location
+        if website:
+            profile.website = website
+        if birthday:
+            profile.birthday = birthday
+        profile.save()
+
+        return EditProfileMutation(profile=profile)
 
 class Query(graphene.ObjectType):
     all_users = graphene.List(UserType)
@@ -56,5 +134,10 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     follow_profile = FollowProfileMutation.Field()
+    edit_bio = EditBioMutation.Field()
+    edit_location = EditLocationMutation.Field()
+    edit_website = EditWebsiteMutation.Field()
+    edit_birthday = EditBirthdayMutation.Field()
+    edit_profile = EditProfileMutation.Field()
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

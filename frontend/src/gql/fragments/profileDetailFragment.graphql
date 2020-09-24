@@ -19,4 +19,9 @@ fragment ProfileDetailFragment on ProfileType {
     }
   }
   created
+  updated
+  bio
+  location
+  website
+  birthday
 }

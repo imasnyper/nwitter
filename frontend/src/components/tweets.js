@@ -1,8 +1,7 @@
 import { useQuery } from '@apollo/client';
 import React, { useEffect, useState, useRef } from 'react';
 import { ALL_FOLLOWED_TWEETS, ALL_TWEETS } from '../gql/tweets';
-import TweetsAndRetweets from './tweetsAndRetweets';
-import { useTraceUpdate } from '../lib/helperFunctions'
+import TweetList from './tweetList';
 
 
 export default function Tweets(props) {
@@ -13,7 +12,8 @@ export default function Tweets(props) {
             // pollInterval: 1000 * 2,
         }    
     )
-    const [after, setAfter] = useState(0);
+    const [afterAll, setAfterAll] = useState(0);
+    const [afterFollowed, setAfterFollowed] = useState(0);
 
     const isBottom = el => {
         if (!el) return
@@ -30,7 +30,7 @@ export default function Tweets(props) {
     const loadMore = queryResultName => {
         fetchMore({
             variables: {
-                after: after + 5
+                after: props.followedTweetsOnly ? afterFollowed + 5 : afterAll + 5
             },
             // TODO: implement https://github.com/apollographql/apollo-client/issues/6502
             updateQuery: (prev, {fetchMoreResult}) => {
@@ -40,7 +40,7 @@ export default function Tweets(props) {
                 if (!prev[queryResultName]) {
                     return
                 }
-                setAfter(after + 5)
+                props.followedTweetsOnly ? setAfterFollowed(afterFollowed + 5) : setAfterAll(afterAll + 5);
                 return Object.assign({}, prev, {
                     [queryResultName]: [...prev[queryResultName], ...fetchMoreResult[queryResultName]],
                 });
@@ -65,5 +65,5 @@ export default function Tweets(props) {
 
     const tweets = props.followedTweetsOnly ? data.allFollowedTweets : data.allTweets
 
-    return <TweetsAndRetweets tweets={tweets} setResendQuery={props.setResendQuery} />
+    return <TweetList setResendQuery={props.setResendQuery} tweets={tweets} />
 }

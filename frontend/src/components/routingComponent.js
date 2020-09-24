@@ -5,6 +5,7 @@ import Login from '../pages/login';
 import Profile from '../pages/profile';
 import Signup from '../pages/signup';
 import TweetPage from '../pages/tweetPage';
+import Test from '../components/test';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 
 export default function RoutingComponent(props) {
@@ -53,6 +54,9 @@ export default function RoutingComponent(props) {
                 </Route>
                 <Route path="/signup">
                     <Signup authToken={props.authToken} setRefreshTokenObject={props.setRefreshTokenObject}/>
+                </Route>
+                <Route path="/test">
+                    <Test />
                 </Route>
                 <Route path="*">
                     <FourZeroFour />
