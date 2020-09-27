@@ -72,3 +72,14 @@ mutation RetweetTweet($id: Int!, $text: String) {
 }
 ${tweetDetailFragment}
 `
+
+export const REPLY_TWEET_MUTATION = gql`
+mutation ReplyTweet($id: Int!, $text: String) {
+  replyTweet(id: $id, text: $text) {
+    tweet {
+      ...TweetDetailFragment
+    }
+  }
+}
+${tweetDetailFragment}
+`

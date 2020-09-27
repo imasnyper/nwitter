@@ -103,6 +103,21 @@ class TweetRetweetMutation(graphene.Mutation):
         return TweetRetweetMutation(tweet=retweet)
 
 
+class TweetReplyMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.Int(required=True)
+        text = graphene.String(required=False)
+
+    tweet = graphene.Field(TweetType)
+
+    def mutate(self, info, id, text=""):
+        tweet = get_object_or_404(Tweet, id=id)
+        profile = Profile.objects.get(user__username=info.context.user.username)
+        reply = Tweet.objects.create(profile=profile, text=text, reply_to=tweet)
+
+        return TweetRetweetMutation(tweet=reply)
+
+
 class TweetMutation(graphene.Mutation):
     class Arguments:
         text = graphene.String(required=True)
@@ -155,6 +170,7 @@ class Mutation(graphene.ObjectType):
     create_tweet = TweetMutation.Field()
     like_tweet = TweetLikeMutation.Field()
     retweet_tweet = TweetRetweetMutation.Field()
+    reply_tweet = TweetReplyMutation.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

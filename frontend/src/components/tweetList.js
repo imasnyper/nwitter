@@ -1,13 +1,15 @@
 import React from 'react';
 import Tweet from './tweet';
+import { Link } from 'react-router-dom';
+import "./styles/tweetList.css";
 
 export default function TweetList(props) {
-    const { tweets } = props
+    const { tweets, topLevel } = props
     
     return (
         <>
             {tweets.map(item => {
-                return <div style={{paddingBottom: "1rem"}} key={item.id}><Tweet tweet={item} setResendQuery={props.setResendQuery} /></div>
+                return <Link to={`/tweet/${item.id}`} className="tweet-link" key={item.id}><Tweet topLevel={topLevel} tweet={item} setResendQuery={props.setResendQuery} /></Link>
             })}
         </>
     )

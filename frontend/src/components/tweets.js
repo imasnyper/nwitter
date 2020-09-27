@@ -76,5 +76,7 @@ export default function Tweets(props) {
 
     const tweets = props.followedTweetsOnly ? data.allFollowedTweets : data.allTweets
 
-    return <TweetList setResendQuery={props.setResendQuery} tweets={tweets} />
+    console.log(tweets)
+
+    return <TweetList topLevel={true} setResendQuery={props.setResendQuery} tweets={tweets} />
 }

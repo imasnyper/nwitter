@@ -1,0 +1,9 @@
+.tweet-link, .tweet-link:hover {
+    color: black;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.tweet-link:hover {
+    text-decoration: none;
+}

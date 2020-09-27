@@ -19,6 +19,9 @@ fragment TweetDetailFragment on TweetType {
     likes {
       ...LikeFragment
     }
+    replies {
+      id
+    }
     retweets
     created
     updated
@@ -32,6 +35,15 @@ fragment TweetDetailFragment on TweetType {
     }
     likes {
       ...LikeFragment
+    }
+    replies {
+      profile {
+        user {
+          id
+          username
+        }
+      }
+      id
     }
     retweets
     created
