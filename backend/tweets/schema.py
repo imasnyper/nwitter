@@ -44,7 +44,7 @@ class TweetType(DjangoObjectType):
         return retweets
 
     def resolve_replies(self, info):
-        replies = Tweet.objects.get(id=self.id).replies.all()
+        replies = Tweet.objects.get(id=self.id).replies.order_by("-created")
         return replies
 
     def resolve_is_reply(self, info):

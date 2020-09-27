@@ -12,18 +12,22 @@ import RetweetModal from './retweetModal';
 import ReplyModal from './replyModal';
 import { useHistory } from 'react-router-dom';
 import TweetList from './tweetList';
+import "./styles/tweet.css";
 
 export default function Tweet(props) {
     const { tweet, setResendQuery, topLevel } = props
     const [showError, setshowError] = useState(false);
     const [showRetweetModal, setShowRetweetModal] = useState(false);
     const [showReplyModal, setShowReplyModal] = useState(false);
+    const [hover, setHover] = useState(false);
 
     const history = useHistory();
 
     const [ likeTweet, {error: tweetError} ] = useMutation(LIKE_TWEET_MUTATION, {onError: () => {setshowError(true)}})
     
     const handleLike = e => {
+        e.stopPropagation();
+        e.preventDefault();
         likeTweet({variables: {id: tweet.id}})
         setResendQuery(true);
     }
@@ -44,8 +48,16 @@ export default function Tweet(props) {
         <>
             <ErrorToast show={showError} setShow={setshowError} error={tweetError}/>
             <Card 
-                className="tweet-card" 
-                style={{cursor: "pointer"}}
+                className="tweet-card"
+                style={hover ? {cursor: "pointer", backgroundColor: "rgb(190, 234, 248)"} : {cursor: "pointer", backgroundColor: "white"}}
+                onMouseOver={e => {
+                    e.stopPropagation();
+                    setHover(true);
+                }}
+                onMouseOut={e => {
+                    e.stopPropagation();
+                    setHover(false);
+                }}
             >
                 <Card.Body>
                     {tweet.isReply                      ? 
@@ -54,7 +66,7 @@ export default function Tweet(props) {
                                 onClick={e => e.stopPropagation()} 
                                 to={`/tweet/${tweet.replyTo.id}`}
                             >
-                                {tweet.replyTo.profile.user.username}
+                                {`${tweet.replyTo.profile.user.username}'s tweet`}
                             </Link>
                         </Card.Text>                    :
                         <></>
@@ -75,7 +87,7 @@ export default function Tweet(props) {
                     <Card.Text>
                         {tweet.text}
                     </Card.Text>
-                    {tweet.retweet ? <><Tweet tweet={tweet.retweet} setResendQuery={props.setResendQuery} /> <br /></>:<></>}
+                    {tweet.retweet && <Link className="retweet-link" to={`/tweet/${tweet.retweet.id}`}><Tweet tweet={tweet.retweet} setResendQuery={props.setResendQuery} /> <br /></Link>}
                     <span onClick={e => handleLike(e)} style={{paddingRight: ".5rem", zIndex: "999"}}>
                         <Button style={{zIndex: "99999"}} >
                             ❤ <Badge variant="light">{tweet.likes.length}</Badge>
@@ -94,7 +106,7 @@ export default function Tweet(props) {
                 </Card.Body>
             </Card>
             {tweet.replies && topLevel && tweet.replies.length > 0  && // only show replies if topLevel prop is set and true, and if there are replies for given tweet.
-                <div style={{paddingLeft: "3rem", paddingTop: "1rem"}}>
+                <div className="left-pad-lg top-pad-sm">
                     <TweetList tweets={tweet.replies} setResendQuery={props.setResendQuery} />
                 </div>                                     
             }

@@ -9,7 +9,7 @@ export default function TweetList(props) {
     return (
         <>
             {tweets.map(item => {
-                return <Link to={`/tweet/${item.id}`} className="tweet-link" key={item.id}><Tweet topLevel={topLevel} tweet={item} setResendQuery={props.setResendQuery} /></Link>
+                return <Link to={`/tweet/${item.id}`} className="tweet-link bot-marg-sm" key={item.id}><Tweet topLevel={topLevel} tweet={item} setResendQuery={props.setResendQuery} /></Link>
             })}
         </>
     )

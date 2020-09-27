@@ -1,9 +1,13 @@
-.tweet-link, .tweet-link:hover {
+.tweet-link, .tweet-link:hover, .retweet-link, .retweet-link:hover {
     color: black;
-    margin-bottom: 1rem;
     display: block;
 }
 
 .tweet-link:hover {
+    text-decoration: none;
+    background-color: lightgrey;
+}
+
+.retweet-link:hover {
     text-decoration: none;
 }
